@@ -1,0 +1,41 @@
+<template>
+  <RenderComponents
+    v-if="data.page_components"
+    :components="data.page_components"
+    :page="data.title"
+    :entryUid="data.uid"
+    :locale="data.locale"
+  />
+</template>
+
+<script>
+import Stack from '../plugins/contentstack'
+import RenderComponents from '../components/RenderComponents'
+
+export default {
+  components: {
+    RenderComponents,
+  },
+  head(req) {
+    return {
+      title: req.data.title,
+      meta: [
+        {
+          title: req.data.seo.meta_title,
+          name: req.data.seo.meta_title,
+          description: req.data.seo.meta_title,
+          keywords: req.data.seo.keywords,
+        },
+      ],
+    }
+  },
+  async asyncData(req) {
+    const data = await Stack.getEntryByUrl('page', `${req.route.fullPath}`, [
+      'page_components.from_blog.featured_blogs',
+    ])
+    return {
+      data: data[0],
+    }
+  },
+}
+</script>

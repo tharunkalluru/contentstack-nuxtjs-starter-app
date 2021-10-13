@@ -35,5 +35,8 @@ export default {
       data: data[0],
     }
   },
+  mounted() {
+    this.$store.commit('setPage', this.data)
+  },
 }
 </script>

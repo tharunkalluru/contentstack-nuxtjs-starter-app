@@ -1,10 +1,12 @@
 <template>
   <main v-show="banner">
     <BlogBanner :data="banner.page_components[0].hero_banner" />
-    <div class="blog-container" 
+    <div
+      class="blog-container"
       :data-pageref="banner.uid"
       data-contenttype="page"
-      :data-locale="banner.locale">
+      :data-locale="banner.locale"
+    >
       <div class="blog-column-left">
         <template v-for="(list, index) in recentBlog">
           <div :key="index" class="blog-list">
@@ -83,6 +85,11 @@ export default {
       archivedList,
       recentBlog,
     }
+  },
+  mounted() {
+    this.$store.commit('setPage', this.banner)
+    const concat = this.archivedList.concat(this.recentBlog)
+    this.$store.commit('setBlogpost', concat)
   },
   methods: {
     moment(param) {

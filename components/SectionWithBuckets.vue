@@ -6,7 +6,7 @@
     </div>
     <div v-if="data" class="member-section">
       <template v-for="index in data.buckets">
-        <div class="content-section" :key="index">
+        <div class="content-section" :key="index.title_h3">
           <img :src="index.icon.url" :alt="index.icon.title" />
           <h3>{{ index.title_h3 }}</h3>
           <p v-html="index.description"></p>

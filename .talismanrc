@@ -1,0 +1,10 @@
+fileignoreconfig:
+- filename: components/BlogSection.vue
+  checksum: 49eb5c311082425c1cc6a082c94d1e8542c10accd4228c2887603b04413cb028
+- filename: components/SectionWithCards.vue
+  checksum: a98ff6ecd128493d080cdd86c6a0028b9b83e5f342bf652393aa08f8e957be7d
+- filename: components/SectionWithBuckets.vue
+  checksum: c078a0ec1adf8f933374df2216a6b221844f8e629ace5550df7b36d7da027c43
+- filename: components/RenderComponents.vue
+  checksum: 56ca4b169cbde2424c921598effea54f139fdefdc1ba3882d5976dba3f61822b
+version: ""

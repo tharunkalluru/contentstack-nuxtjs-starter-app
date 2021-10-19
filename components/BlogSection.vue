@@ -10,7 +10,7 @@
     </div>
     <div v-if="data" class="home-featured-blogs">
       <template v-for="index in data.featured_blogs">
-        <div class="featured-blog" :key="index">
+        <div class="featured-blog" :key="index.titles">
           <img
             :src="index.featured_image.url"
             class="blog-post-img"

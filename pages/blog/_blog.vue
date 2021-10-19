@@ -9,10 +9,10 @@
     >
       <div class="blog-detail">
         <h2>{{ data.title }}</h2>
-        <p>
+        <span>
           {{ moment(data.date) }}, <strong>{{ data.author[0].title }}</strong>
-        </p>
-        <p v-html="data.body"></p>
+        </span>
+        <template v-html="data.body"></template>
       </div>
       <div v-if="data" class="blog-column-right">
         <div class="related-post">

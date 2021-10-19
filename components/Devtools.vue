@@ -23,15 +23,10 @@
           <pre v-if="this.response" id="jsonViewer">
             <json-viewer
               :value="this.response"
-               copyable
+               :copyable="false"
               >
               </json-viewer>
           </pre>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn primary-btn" data-bs-dismiss="modal">
-            Close
-          </button>
         </div>
       </div>
     </div>
@@ -44,13 +39,14 @@ export default {
   components: { JsonViewer },
   data() {
     const { header, footer, page, blogPost } = this.$store.state
+    const response = {
+      headers: header ? header : null,
+      footer: footer ? footer : null,
+    }
+    page && (response.page = page)
+    blogPost && (response.blog_post = blogPost)
     return {
-      response: {
-        headers: header ? header : null,
-        footer: footer ? footer : null,
-        page: page || null,
-        blogpost: blogPost || null,
-      },
+      response,
     }
   },
 }

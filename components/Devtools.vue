@@ -35,16 +35,41 @@
 <script>
 import JsonViewer from 'vue-json-viewer/ssr'
 import 'vue-json-viewer/style.css'
+
 export default {
   components: { JsonViewer },
+  methods: {
+    filterObject: function (inputObject) {
+      const unWantedProps = [
+        'uid',
+        '_version',
+        'ACL',
+        '_in_progress',
+        'created_at',
+        'created_by',
+        'updated_at',
+        'updated_by',
+        'publish_details',
+      ]
+      for (const key in inputObject) {
+        unWantedProps.includes(key) && delete inputObject[key]
+        if (typeof inputObject[key] !== 'object') {
+          continue
+        }
+        inputObject[key] = this.filterObject(inputObject[key])
+      }
+      return inputObject
+    },
+  },
   data() {
     const { header, footer, page, blogPost } = this.$store.state
-    const response = {
+    let response = {
       headers: header ? header : null,
       footer: footer ? footer : null,
     }
     page && (response.page = page)
     blogPost && (response.blog_post = blogPost)
+    response = this.filterObject(response)
     return {
       response,
     }

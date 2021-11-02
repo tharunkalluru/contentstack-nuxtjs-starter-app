@@ -15,7 +15,7 @@
         <span>
           {{ moment(data.date) }}, <strong>{{ data.author[0].title }}</strong>
         </span>
-        <template v-html="data.body"></template>
+        <p v-html="data.body"></p>
       </div>
       <div v-if="data" class="blog-column-right">
         <div class="related-post">

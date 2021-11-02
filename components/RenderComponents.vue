@@ -69,6 +69,7 @@ import SectionWithEmbedObject from '../components/SectionWithEmbedObject'
 import SectionWithBuckets from '../components/SectionWithBuckets'
 import AboutSectionBucket from '../components/AboutSectionBucket'
 import BlogSection from '../components/BlogSection'
+import Devtools from '../components/Devtools.vue'
 
 export default {
   components: {
@@ -80,6 +81,7 @@ export default {
     TeamSection,
     BlogSection,
     SectionWithEmbedObject,
+    Devtools,
   },
   props: ['components', 'page', 'entryUid', 'locale'],
 }

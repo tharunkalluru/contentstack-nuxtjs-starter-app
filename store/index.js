@@ -3,12 +3,20 @@
 export const state = () => ({
   header: null,
   footer: null,
+  page: null,
+  blogPost: null,
 })
 export const mutations = {
-  setHeader(state, data) {
-    state.header = data
+  setHeader(stateObj, data) {
+    stateObj.header = data
   },
-  setFooter(state, data) {
-    state.footer = data
+  setFooter(stateObj, data) {
+    stateObj.footer = data
+  },
+  setPage(stateObj, data) {
+    stateObj.page = data
+  },
+  setBlogpost(stateObj, data) {
+    stateObj.blogPost = data
   },
 }

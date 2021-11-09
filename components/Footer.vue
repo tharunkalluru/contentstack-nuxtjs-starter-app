@@ -5,33 +5,31 @@
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="this.$store.state.footer[0].title"
+          :title="this.$store.state.footer.title"
           to="/"
           ><img
             class="logo"
-            :src="this.$store.state.footer[0].logo.url"
-            :alt="this.$store.state.footer[0].title"
+            :src="this.$store.state.footer.logo.url"
+            :alt="this.$store.state.footer.title"
         /></NuxtLink>
       </div>
       <div class="col-half">
         <nav>
           <ul class="nav-ul">
-            <template v-for="index in this.$store.state.footer">
               <li
                 class="footer-nav-li"
-                v-for="navItems in index.navigation.link"
+                v-for="navItems in this.$store.state.footer.navigation.link"
                 :key="navItems.title"
               >
                 <NuxtLink :to="navItems.href">{{ navItems.title }}</NuxtLink>
               </li>
-            </template>
           </ul>
         </nav>
       </div>
       <div class="col-quarter social-link">
         <div class="social-nav">
           <template
-            v-for="index in this.$store.state.footer[0].social.social_share"
+            v-for="index in this.$store.state.footer.social.social_share"
           >
             <NuxtLink
               :to="index.link.href"
@@ -43,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div class="copyright" v-html="this.$store.state.footer[0].copyright"></div>
+    <div class="copyright" v-html="this.$store.state.footer.copyright"></div>
   </footer>
 </template>
 
@@ -53,7 +51,7 @@ import Stack from '../plugins/contentstack'
 export default {
   async fetch() {
     this.data = await Stack.getEntries('footer')
-    this.$store.commit('setFooter', this.data)
+    this.$store.commit('setFooter', this.data[0])
   },
 }
 </script>

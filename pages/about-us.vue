@@ -35,5 +35,9 @@ export default {
       data: data[0],
     }
   },
+  mounted() {
+    this.$store.commit('setPage', this.data)
+    this.$store.commit('setBlogpost', null);
+  },
 }
 </script>

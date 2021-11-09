@@ -1,10 +1,15 @@
 <template>
   <main v-show="banner">
     <BlogBanner :data="banner.page_components[0].hero_banner" />
-    <div class="blog-container" 
+    <ClientOnly>
+      <Devtools />
+    </ClientOnly>
+    <div
+      class="blog-container"
       :data-pageref="banner.uid"
       data-contenttype="page"
-      :data-locale="banner.locale">
+      :data-locale="banner.locale"
+    >
       <div class="blog-column-left">
         <template v-for="(list, index) in recentBlog">
           <div :key="index" class="blog-list">
@@ -48,10 +53,12 @@ import moment from 'moment'
 
 import Stack from '../../plugins/contentstack'
 import BlogBanner from '../../components/BlogBanner'
+import Devtools from '../../components/Devtools.vue'
 
 export default {
   components: {
     BlogBanner,
+    Devtools,
   },
   head(req) {
     return {
@@ -84,6 +91,11 @@ export default {
       recentBlog,
     }
   },
+  mounted() {
+    this.$store.commit('setPage', this.banner)
+    const concat = this.archivedList.concat(this.recentBlog)
+    this.$store.commit('setBlogpost', concat)
+  },
   methods: {
     moment(param) {
       return moment(param).format('ddd, MMM D YYYY')
@@ -91,5 +103,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

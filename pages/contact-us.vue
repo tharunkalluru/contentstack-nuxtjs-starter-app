@@ -28,12 +28,13 @@ export default {
   },
   async asyncData(req) {
     const data = await Stack.getEntryByUrl('page', `${req.route.fullPath}`)
-
     return {
       data: data[0],
     }
   },
+  mounted() {
+    this.$store.commit('setPage', this.data)
+    this.$store.commit('setBlogpost', null);
+  },
 }
 </script>
-
-<style></style>

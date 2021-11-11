@@ -1,6 +1,9 @@
 <template>
   <main>
     <BlogBanner :data="banner.page_components[0].hero_banner" />
+    <ClientOnly>
+      <Devtools />
+    </ClientOnly>
     <div
       class="blog-container"
       :data-pageref="data.uid"
@@ -9,9 +12,9 @@
     >
       <div class="blog-detail">
         <h2>{{ data.title }}</h2>
-        <p>
+        <span>
           {{ moment(data.date) }}, <strong>{{ data.author[0].title }}</strong>
-        </p>
+        </span>
         <p v-html="data.body"></p>
       </div>
       <div v-if="data" class="blog-column-right">
@@ -36,10 +39,12 @@ import moment from 'moment'
 
 import Stack from '../../plugins/contentstack'
 import BlogBanner from '../../components/BlogBanner'
+import Devtools from '../../components/Devtools.vue'
 
 export default {
   components: {
     BlogBanner,
+    Devtools,
   },
   head(req) {
     return {
@@ -81,5 +86,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

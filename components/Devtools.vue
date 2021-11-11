@@ -23,16 +23,12 @@
           <pre v-if="this.response" id="jsonViewer">
             <json-viewer
               :value="this.response"
-               copyable
+               :copyable="false"
               >
               </json-viewer>
           </pre>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn primary-btn" data-bs-dismiss="modal">
-            Close
-          </button>
-        </div>
+        <div class="modal-footer"></div>
       </div>
     </div>
   </div>
@@ -40,17 +36,43 @@
 <script>
 import JsonViewer from 'vue-json-viewer/ssr'
 import 'vue-json-viewer/style.css'
+
 export default {
   components: { JsonViewer },
+  methods: {
+    filterObject: function (inputObject) {
+      const unWantedProps = [
+        'uid',
+        '_version',
+        'ACL',
+        '_in_progress',
+        'created_at',
+        'created_by',
+        'updated_at',
+        'updated_by',
+        'publish_details',
+      ]
+      for (const key in inputObject) {
+        unWantedProps.includes(key) && delete inputObject[key]
+        if (typeof inputObject[key] !== 'object') {
+          continue
+        }
+        inputObject[key] = this.filterObject(inputObject[key])
+      }
+      return inputObject
+    },
+  },
   data() {
     const { header, footer, page, blogPost } = this.$store.state
+    let response = {
+      headers: header ? header : null,
+      footer: footer ? footer : null,
+    }
+    page && (response.page = page)
+    blogPost && (response.blog_post = blogPost)
+    response = this.filterObject(response)
     return {
-      response: {
-        headers: header ? header : null,
-        footer: footer ? footer : null,
-        page: page || null,
-        blogpost: blogPost || null,
-      },
+      response,
     }
   },
 }

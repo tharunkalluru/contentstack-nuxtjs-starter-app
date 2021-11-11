@@ -16,7 +16,6 @@
       <div class="col-half">
         <nav>
           <ul class="nav-ul">
-            <!-- <template v-for="index in this.$store.state.footer"> -->
               <li
                 class="footer-nav-li"
                 v-for="navItems in this.$store.state.footer.navigation.link"
@@ -24,7 +23,6 @@
               >
                 <NuxtLink :to="navItems.href">{{ navItems.title }}</NuxtLink>
               </li>
-            <!-- </template> -->
           </ul>
         </nav>
       </div>

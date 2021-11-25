@@ -15,17 +15,17 @@
         <span>
           {{ moment(data.date) }}, <strong>{{ data.author[0].title }}</strong>
         </span>
-        <p v-html="data.body"></p>
+        <p v-html="data.body" />
       </div>
       <div v-if="data" class="blog-column-right">
         <div class="related-post">
           <h2>{{ banner.page_components[2].widget.title_h2 }}</h2>
           <template v-for="(blog, index) in data.related_post">
             <div :key="index">
-              <NuxtLink :key="index" :to="blog.url"
-                ><h4>{{ blog.title }}</h4></NuxtLink
-              >
-              <p v-html="blog.body.slice(0, 80)"></p>
+              <NuxtLink :key="index" :to="blog.url">
+                <h4>{{ blog.title }}</h4>
+              </NuxtLink>
+              <p v-html="blog.body.slice(0, 80)" />
             </div>
           </template>
         </div>
@@ -46,6 +46,26 @@ export default {
     BlogBanner,
     Devtools,
   },
+  async asyncData(req) {
+    try {
+      const banner = await Stack.getEntryByUrl({
+        contentTypeUid: 'page',
+        entryUrl: `/blog`,
+      })
+      const data = await Stack.getEntryByUrl({
+        contentTypeUid: 'blog_post',
+        entryUrl: `${req.route.fullPath}`,
+        referenceFieldPath: [`related_post`, `author`],
+        jsonRtePath: ['body', 'related_post.body'],
+      })
+      return {
+        data: data[0],
+        banner: banner[0],
+      }
+    } catch (e) {
+      return false
+    }
+  },
   head(req) {
     return {
       title: req.data.title,
@@ -57,22 +77,6 @@ export default {
           keywords: req.data.seo.keywords,
         },
       ],
-    }
-  },
-  async asyncData(req) {
-    try {
-      const banner = await Stack.getEntryByUrl('page', `/blog`)
-      const data = await Stack.getEntryByUrl(
-        'blog_post',
-        `${req.route.fullPath}`,
-        [`related_post`, `author`]
-      )
-      return {
-        data: data[0],
-        banner: banner[0],
-      }
-    } catch (e) {
-      return false
     }
   },
   mounted() {

@@ -3,7 +3,7 @@
     v-if="data.page_components"
     :components="data.page_components"
     :page="data.title"
-    :entryUid="data.uid"
+    :entry-uid="data.uid"
     :locale="data.locale"
   />
 </template>
@@ -15,6 +15,16 @@ import RenderComponents from '../components/RenderComponents'
 export default {
   components: {
     RenderComponents,
+  },
+  async asyncData(req) {
+    const data = await Stack.getEntryByUrl({
+      contentTypeUid: 'page',
+      entryUrl: `${req.route.fullPath}`,
+      jsonRtePath: ['page_components.section_with_buckets.buckets.description'],
+    })
+    return {
+      data: data[0],
+    }
   },
   head(req) {
     return {
@@ -29,15 +39,9 @@ export default {
       ],
     }
   },
-  async asyncData(req) {
-    const data = await Stack.getEntryByUrl('page', `${req.route.fullPath}`)
-    return {
-      data: data[0],
-    }
-  },
   mounted() {
     this.$store.commit('setPage', this.data)
-    this.$store.commit('setBlogpost', null);
+    this.$store.commit('setBlogpost', null)
   },
 }
 </script>

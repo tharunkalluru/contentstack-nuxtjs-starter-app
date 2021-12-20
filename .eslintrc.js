@@ -18,6 +18,8 @@ module.exports = {
     'no-console': 0,
     "vue/require-prop-types":0,
     "vue/max-attributes-per-line":0,
-    "prettier/prettier":0
+    "prettier/prettier":0,
+    "no-useless-computed-key":0,
+    "vue/no-v-html":0
   },
 }

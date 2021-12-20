@@ -5,43 +5,48 @@
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="this.$store.state.footer.title"
+          :title="$store.state.footer.title"
           to="/"
-          ><img
+        >
+          <img
             class="logo"
-            :src="this.$store.state.footer.logo.url"
-            :alt="this.$store.state.footer.title"
-        /></NuxtLink>
+            :src="$store.state.footer.logo.url"
+            :alt="$store.state.footer.title"
+          >
+        </NuxtLink>
       </div>
       <div class="col-half">
         <nav>
           <ul class="nav-ul">
-              <li
-                class="footer-nav-li"
-                v-for="navItems in this.$store.state.footer.navigation.link"
-                :key="navItems.title"
-              >
-                <NuxtLink :to="navItems.href">{{ navItems.title }}</NuxtLink>
-              </li>
+            <li
+              v-for="navItems in $store.state.footer.navigation.link"
+              :key="navItems.title"
+              class="footer-nav-li"
+            >
+              <NuxtLink :to="navItems.href">
+                {{ navItems.title }}
+              </NuxtLink>
+            </li>
           </ul>
         </nav>
       </div>
       <div class="col-quarter social-link">
         <div class="social-nav">
           <template
-            v-for="index in this.$store.state.footer.social.social_share"
+            v-for="index in $store.state.footer.social.social_share"
           >
             <NuxtLink
-              :to="index.link.href"
               :key="index.title"
+              :to="index.link.href"
               :title="index.title"
-              ><img :src="index.icon.url" :alt="index.icon.title"
-            /></NuxtLink>
+            >
+              <img :src="index.icon.url" :alt="index.icon.title">
+            </NuxtLink>
           </template>
         </div>
       </div>
     </div>
-    <div class="copyright" v-html="this.$store.state.footer.copyright"></div>
+    <div class="copyright" v-html="$store.state.footer.copyright" />
   </footer>
 </template>
 
@@ -50,7 +55,7 @@ import Stack from '../plugins/contentstack'
 
 export default {
   async fetch() {
-    this.data = await Stack.getEntries('footer')
+    this.data = await Stack.getEntries({contentTypeUid:'footer',jsonRtePath:["copyright"]})
     this.$store.commit('setFooter', this.data[0])
   },
 }

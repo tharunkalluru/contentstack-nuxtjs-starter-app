@@ -120,7 +120,7 @@ header nav {
   overflow: hidden;
 }
 
-header nav li a:hover, header nav li a.active {
+header nav li a:hover, header nav li a.nuxt-link-exact-active {
   color: #715cdd;
 }
 

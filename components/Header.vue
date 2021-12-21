@@ -1,12 +1,12 @@
 <template>
   <header class="header">
     <template
-      v-if="this.$store.state.header.notification_bar.show_announcement"
+      v-if="$store.state.header.notification_bar.show_announcement"
     >
       <div class="note-div">
         <span
           v-html="
-            this.$store.state.header.notification_bar.announcement_text
+            $store.state.header.notification_bar.announcement_text
           "
         />
         <span
@@ -14,7 +14,7 @@
           data-bs-toggle="modal"
           data-bs-target="#staticBackdrop"
         >
-          <img src="../static/Devtools.gif" alt="Dev tools icon" title="Json Preview"/>
+          <img src="../static/Devtools.gif" alt="Dev tools icon" title="Json Preview">
         </span>
       </div>
     </template>
@@ -23,30 +23,33 @@
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="this.$store.state.header.title"
+          :title="$store.state.header.title"
           to="/"
-          ><img
+        >
+          <img
             class="logo"
-            :src="this.$store.state.header.logo.url"
-            :alt="this.$store.state.header.title"
-        /></NuxtLink>
+            :src="$store.state.header.logo.url"
+            :alt="$store.state.header.title"
+          >
+        </NuxtLink>
       </div>
-      <input type="checkbox" class="menu-btn" id="menu-btn" /><label
+      <input id="menu-btn" type="checkbox" class="menu-btn"><label
         class="menu-icon"
         for="menu-btn"
-        ><span class="navicon"></span
-      ></label>
+      ><span class="navicon" /></label>
       <nav class="menu">
         <ul class="nav-ul header-ul">
-            <li
-              class="nav-li"
-              v-for="navItems in this.$store.state.header.navigation_menu"
-              :key="navItems.title"
-            >
-              <NuxtLink :to="navItems.page_reference[0].url">{{
+          <li
+            v-for="navItems in $store.state.header.navigation_menu"
+            :key="navItems.title"
+            class="nav-li"
+          >
+            <NuxtLink :to="navItems.page_reference[0].url">
+              {{
                 navItems.page_reference[0].title
-              }}</NuxtLink>
-            </li>
+              }}
+            </NuxtLink>
+          </li>
         </ul>
       </nav>
     </div>
@@ -57,10 +60,11 @@
 import Stack from '../plugins/contentstack'
 export default {
   async fetch() {
-    this.data = await Stack.getEntries(
-      'header',
-      `navigation_menu.page_reference`
-    )
+    this.data = await Stack.getEntries({
+      contentTypeUid:'header',
+      referenceFieldPath:`navigation_menu.page_reference`,
+      jsonRtePath:["notification_bar.announcement_text"]
+    })
     this.$store.commit('setHeader', this.data[0])
   },
 }

@@ -10,8 +10,6 @@ const Stack = contentstack.Stack({
     : 'us',
 })
 
-console.log(Stack);
-
 const renderOption = {
   ['span']: (node, next) => {
     return next(node.children)

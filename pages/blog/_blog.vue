@@ -40,6 +40,7 @@ import moment from 'moment'
 import Stack from '../../plugins/contentstack'
 import BlogBanner from '../../components/BlogBanner'
 import Devtools from '../../components/Devtools.vue'
+import { onEntryChange } from '../../plugins/contentstack'
 
 export default {
   components: {
@@ -80,10 +81,31 @@ export default {
     }
   },
   mounted() {
+    onEntryChange(async () => {
+      if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
+        const response = await this.fetchData()
+        this.data = response.data
+      }
+    })
     this.$store.commit('setPage', this.banner)
     this.$store.commit('setBlogpost', this.data)
   },
   methods: {
+    async fetchData() {
+      try {
+        const data = await Stack.getEntryByUrl({
+          contentTypeUid: 'blog_post',
+          entryUrl: `${this.$route.fullPath}`,
+          referenceFieldPath: [`related_post`, `author`],
+          jsonRtePath: ['body', 'related_post.body'],
+        })
+        return {
+          data: data[0],
+        }
+      } catch (e) {
+        return false
+      }
+    },
     moment(param) {
       return moment(param).format('ddd, MMM D YYYY')
     },

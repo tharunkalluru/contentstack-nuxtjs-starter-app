@@ -7,6 +7,10 @@ export default {
     CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION
       ? process.env.CONTENTSTACK_REGION
       : '',
+    CONTENTSTACK_MANAGEMENT_TOKEN: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
+    CONTENTSTACK_API_HOST: process.env.CONTENTSTACK_API_HOST,
+    CONTENTSTACK_APP_HOST: process.env.CONTENTSTACK_APP_HOST,
+    CONTENTSTACK_LIVE_PREVIEW: process.env.CONTENTSTACK_LIVE_PREVIEW,
   },
   head: {
     title: 'contentstack-nuxtjs-starter-app',
@@ -55,6 +59,16 @@ export default {
   css: [],
 
   plugins: [],
+  // publicRuntimeConfig: {
+
+  //       CONTENTSTACK_API_KEY: process.env.CONTENTSTACK_API_KEY,
+  //       CONTENTSTACK_DELIVERY_TOKEN: process.env.CONTENTSTACK_DELIVERY_TOKEN,
+  //       CONTENTSTACK_ENVIRONMENT: process.env.CONTENTSTACK_ENVIRONMENT,
+  //       CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION
+  //         ? process.env.CONTENTSTACK_REGION
+  //         : '',
+
+  // },
 
   components: true,
 

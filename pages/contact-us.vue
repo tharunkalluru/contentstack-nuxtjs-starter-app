@@ -56,6 +56,10 @@ export default {
         entryUrl: `${this.$route.fullPath}`,
         jsonRtePath: ['page_components.section_with_html_code.description'],
       })
+      const element = document.getElementsByClassName('cslp-tooltip')
+      if (element.length > 0) {
+        element[0].outerHTML = null
+      }
       return response
     },
   },

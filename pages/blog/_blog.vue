@@ -99,6 +99,10 @@ export default {
           referenceFieldPath: [`related_post`, `author`],
           jsonRtePath: ['body', 'related_post.body'],
         })
+        const element = document.getElementsByClassName('cslp-tooltip')
+        if (element.length > 0) {
+          element[0].outerHTML = null
+        }
         return {
           data: data[0],
         }

@@ -62,6 +62,10 @@ export default {
           'page_components.section_with_buckets.buckets.description',
         ],
       })
+      const element = document.getElementsByClassName('cslp-tooltip')
+      if (element.length > 0) {
+        element[0].outerHTML = null
+      }
       return response
     },
   },

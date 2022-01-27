@@ -3,17 +3,6 @@
     <template v-if="$store.state.header.notification_bar.show_announcement">
       <div class="note-div">
         <span v-html="$store.state.header.notification_bar.announcement_text" />
-        <span
-          class="devtools"
-          data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop"
-        >
-          <img
-            src="../static/Devtools.gif"
-            alt="Dev tools icon"
-            title="Json Preview"
-          />
-        </span>
       </div>
     </template>
     <div class="max-width header-div">
@@ -49,15 +38,22 @@
           </li>
         </ul>
       </nav>
+      <div class="json-preview">
+        <Tooltip content="JSON Preview" direction="top"> </Tooltip>
+      </div>
     </div>
   </header>
 </template>
 
 <script>
 import Stack from '../plugins/contentstack'
+import Tooltip from '../components/Tooltip'
 import { onEntryChange } from '../plugins/contentstack'
 
 export default {
+  components: {
+    Tooltip,
+  },
   async fetch() {
     this.data = await Stack.getEntries({
       contentTypeUid: 'header',

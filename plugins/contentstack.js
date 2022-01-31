@@ -19,12 +19,6 @@ const Stack = contentstack.Stack({
       ? process.env.CONTENTSTACK_API_HOST
       : '',
   },
-  clientUrlParams: {
-    protocol: 'https',
-    host: process.env.CONTENTSTACK_APP_HOST
-      ? process.env.CONTENTSTACK_APP_HOST
-      : '',
-  },
 })
 
 const renderOption = {
@@ -36,7 +30,16 @@ const renderOption = {
 /**
  * initialize live preview
  */
-ContentstackLivePreview.init(Stack)
+ContentstackLivePreview.init({
+  enable: true,
+  stackSdk: Stack,
+  clientUrlParams: {
+    host: process.env.CONTENTSTACK_APP_HOST
+      ? process.env.CONTENTSTACK_APP_HOST
+      : '',
+  },
+  ssr: false,
+})
 
 Stack.setHost(process.env.CONTENTSTACK_API_HOST)
 

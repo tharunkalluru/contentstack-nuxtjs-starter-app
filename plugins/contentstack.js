@@ -10,6 +10,9 @@ const Stack = contentstack.Stack({
     : 'us',
 })
 
+if (process.env.CONTENTSTACK_API_HOST)
+  Stack.setHost(process.env.CONTENTSTACK_API_HOST)
+
 const renderOption = {
   ['span']: (node, next) => {
     return next(node.children)

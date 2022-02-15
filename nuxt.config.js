@@ -7,6 +7,10 @@ export default {
     CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION
       ? process.env.CONTENTSTACK_REGION
       : '',
+    CONTENTSTACK_MANAGEMENT_TOKEN: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
+    CONTENTSTACK_API_HOST: process.env.CONTENTSTACK_API_HOST,
+    CONTENTSTACK_APP_HOST: process.env.CONTENTSTACK_APP_HOST,
+    CONTENTSTACK_LIVE_PREVIEW: process.env.CONTENTSTACK_LIVE_PREVIEW,
   },
   head: {
     title: 'contentstack-nuxtjs-starter-app',
@@ -17,6 +21,7 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: '/css/tooltip.css' },
       {
         rel: 'stylesheet',
         href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css',
@@ -32,7 +37,7 @@ export default {
           'sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC',
         crossOrigin: 'anonymous',
       },
-      { rel: 'stylesheet', href: '/css/style.css' },
+
       { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
       {
         rel: 'stylesheet',
@@ -42,6 +47,8 @@ export default {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Inter&amp;display=swap',
       },
+
+      { rel: 'stylesheet', href: '/css/style.css' },
     ],
     script: [
       {

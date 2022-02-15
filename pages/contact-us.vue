@@ -11,6 +11,8 @@
 <script>
 import Stack from '../plugins/contentstack'
 import RenderComponents from '../components/RenderComponents'
+import { onEntryChange } from '../plugins/contentstack'
+
 export default {
   components: { RenderComponents },
   async asyncData(req) {
@@ -36,9 +38,30 @@ export default {
       ],
     }
   },
+
   mounted() {
+    onEntryChange(async () => {
+      if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
+        const response = await this.fetchData()
+        this.data = response[0]
+      }
+    })
     this.$store.commit('setPage', this.data)
     this.$store.commit('setBlogpost', null)
+  },
+  methods: {
+    async fetchData() {
+      const response = await Stack.getEntryByUrl({
+        contentTypeUid: 'page',
+        entryUrl: `${this.$route.fullPath}`,
+        jsonRtePath: ['page_components.section_with_html_code.description'],
+      })
+      const element = document.getElementsByClassName('cslp-tooltip')
+      if (element.length > 0) {
+        element[0].outerHTML = null
+      }
+      return response
+    },
   },
 }
 </script>

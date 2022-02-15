@@ -12,7 +12,7 @@
             class="logo"
             :src="$store.state.footer.logo.url"
             :alt="$store.state.footer.title"
-          >
+          />
         </NuxtLink>
       </div>
       <div class="col-half">
@@ -32,15 +32,13 @@
       </div>
       <div class="col-quarter social-link">
         <div class="social-nav">
-          <template
-            v-for="index in $store.state.footer.social.social_share"
-          >
+          <template v-for="index in $store.state.footer.social.social_share">
             <NuxtLink
               :key="index.title"
               :to="index.link.href"
               :title="index.title"
             >
-              <img :src="index.icon.url" :alt="index.icon.title">
+              <img :src="index.icon.url" :alt="index.icon.title" />
             </NuxtLink>
           </template>
         </div>
@@ -52,11 +50,32 @@
 
 <script>
 import Stack from '../plugins/contentstack'
+import { onEntryChange } from '../plugins/contentstack'
 
 export default {
   async fetch() {
-    this.data = await Stack.getEntries({contentTypeUid:'footer',jsonRtePath:["copyright"]})
+    this.data = await Stack.getEntries({
+      contentTypeUid: 'footer',
+      jsonRtePath: ['copyright'],
+    })
     this.$store.commit('setFooter', this.data[0])
+  },
+  mounted() {
+    onEntryChange(async () => {
+      if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
+        const response = await this.fetchData()
+        this.$store.commit('setFooter', response[0])
+      }
+    })
+  },
+  methods: {
+    async fetchData() {
+      const result = await Stack.getEntries({
+        contentTypeUid: 'footer',
+        jsonRtePath: ['copyright'],
+      })
+      return result
+    },
   },
 }
 </script>

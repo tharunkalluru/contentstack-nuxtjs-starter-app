@@ -20,6 +20,5 @@ module.exports = {
     "vue/max-attributes-per-line":0,
     "prettier/prettier":0,
     "no-useless-computed-key":0,
-    "vue/no-v-html":0
   },
 }

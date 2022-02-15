@@ -8,10 +8,28 @@
     aria-labelledby="staticBackdropLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-lg">
+    <div
+      class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+    >
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="staticBackdropLabel" class="modal-title">Json Response</h2>
+          <h2 id="staticBackdropLabel" class="modal-title">
+            JSON Preview
+            </h2>
+          <div
+            class="tooltip-wrapper"
+            v-on:click="copyObject(JSON.stringify(response))"
+          >
+            <div class="tooltip-copy">
+              <img src="../static/copy.svg" class="copyIcon" alt="copy icon" />
+              <div class="tooltip-top-copy" v-if="this.componentKey > 0">
+                {{ this.messageCopied }}
+              </div>
+              <div class="tooltip-top-copy" v-else>
+                {{ this.messageCopy }}
+              </div>
+            </div>
+          </div>
           <button
             type="button"
             class="btn-close"
@@ -40,6 +58,10 @@ import 'vue-json-viewer/style.css'
 export default {
   components: { JsonViewer },
   methods: {
+    copyObject: function (response) {
+      navigator.clipboard.writeText(response)
+      this.componentKey++
+    },
     filterObject: function (inputObject) {
       const unWantedProps = [
         'uid',
@@ -73,7 +95,16 @@ export default {
     response = this.filterObject(response)
     return {
       response,
+      messageCopy: 'Copy',
+      messageCopied: 'Copied',
+      componentKey: 0,
     }
+  },
+  updated() {
+    this.componentKey &&
+      setTimeout(() => {
+        this.componentKey = 0
+      }, 300)
   },
 }
 </script>

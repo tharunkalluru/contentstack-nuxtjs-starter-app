@@ -18,7 +18,7 @@
                 alt="blog img"
                 class="blog-list-img"
                 :src="list.featured_image.url"
-              >
+              />
             </NuxtLink>
             <div class="blog-content">
               <NuxtLink :to="list.url">
@@ -57,6 +57,7 @@ import moment from 'moment'
 import Stack from '../../plugins/contentstack'
 import BlogBanner from '../../components/BlogBanner'
 import Devtools from '../../components/Devtools.vue'
+import { onEntryChange } from '../../plugins/contentstack'
 
 export default {
   components: {
@@ -66,8 +67,15 @@ export default {
   async asyncData(req) {
     const archivedList = []
     const recentBlog = []
-    const data = await Stack.getEntryByUrl({contentTypeUid:'page', entryUrl:`${req.route.path}`})
-    const list = await Stack.getEntries({contentTypeUid:'blog_post',referenceFieldPath: [`author`, `related_post`], jsonRtePath:["body"]})
+    const data = await Stack.getEntryByUrl({
+      contentTypeUid: 'page',
+      entryUrl: `${req.route.path}`,
+    })
+    const list = await Stack.getEntries({
+      contentTypeUid: 'blog_post',
+      referenceFieldPath: [`author`, `related_post`],
+      jsonRtePath: ['body'],
+    })
     list.forEach((item) => {
       if (item.is_archived) {
         archivedList.push(item)
@@ -95,11 +103,34 @@ export default {
     }
   },
   mounted() {
+    onEntryChange(async () => {
+      if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
+        const response = await this.fetchData()
+        this.banner = response.data
+      }
+    })
     this.$store.commit('setPage', this.banner)
     const concat = this.archivedList.concat(this.recentBlog)
     this.$store.commit('setBlogpost', concat)
   },
   methods: {
+    async fetchData() {
+      try {
+        const data = await Stack.getEntryByUrl({
+          contentTypeUid: 'page',
+          entryUrl: `${this.$route.path}`,
+        })
+        const element = document.getElementsByClassName('cslp-tooltip')
+        if (element.length > 0) {
+          element[0].outerHTML = null
+        }
+        return {
+          data: data[0],
+        }
+      } catch (e) {
+        return false
+      }
+    },
     moment(param) {
       return moment(param).format('ddd, MMM D YYYY')
     },

@@ -16,7 +16,7 @@
         :data="component.hero_banner"
       />
       <HeroBanner
-        v-if="component.hero_banner && page === 'About Us'"
+        v-if="component.hero_banner && page !== 'Home'"
         :key="'hero_banner' + index"
         title="about-content"
         :data="component.hero_banner"
@@ -41,18 +41,23 @@
         :key="'section_with_buckets' + index"
         :data="component.section_with_buckets"
       />
-      <AboutSectionBucket
+      <SectionWithBuckets
+        v-if="component.section_with_buckets && page !== 'Home'"
         :key="'section_with_buckets' + index"
-        v-if="component.section_with_buckets && page === 'About Us'"
         :data="component.section_with_buckets"
       />
       <TeamSection
-        :key="'our_team' + index"
         v-if="component.our_team"
+        :key="'our_team' + index"
         :data="component.our_team"
       />
       <SectionWithEmbedObject
         v-if="component.section_with_html_code && page === 'Contact Us'"
+        :key="'section_with_html_code' + index"
+        :data="component.section_with_html_code"
+      />
+      <SectionWithEmbedObject
+        v-if="component.section_with_html_code && page !== 'Contact Us'"
         :key="'section_with_html_code' + index"
         :data="component.section_with_html_code"
       />
@@ -67,7 +72,6 @@ import SectionWithCards from '../components/SectionWithCards'
 import TeamSection from '../components/TeamSection'
 import SectionWithEmbedObject from '../components/SectionWithEmbedObject'
 import SectionWithBuckets from '../components/SectionWithBuckets'
-import AboutSectionBucket from '../components/AboutSectionBucket'
 import BlogSection from '../components/BlogSection'
 import Devtools from '../components/Devtools.vue'
 
@@ -76,7 +80,6 @@ export default {
     HeroBanner,
     Section,
     SectionWithBuckets,
-    AboutSectionBucket,
     SectionWithCards,
     TeamSection,
     BlogSection,

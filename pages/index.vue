@@ -1,22 +1,23 @@
 <template>
   <RenderComponents
-    v-if="data.page_components"
+    v-if="data"
     :components="data.page_components"
     :page="data.title"
     :entry-uid="data.uid"
     :locale="data.locale"
   />
+  <NotFound v-else-if="!data" />
 </template>
 
 <script>
-import Stack from '../plugins/contentstack'
 import RenderComponents from '../components/RenderComponents'
-
-import { onEntryChange } from '../plugins/contentstack'
+import NotFound from '../layouts/error';
+import Stack, { onEntryChange } from '../plugins/contentstack'
 
 export default {
   components: {
     RenderComponents,
+    NotFound
   },
   async asyncData(req) {
     const data = await Stack.getEntryByUrl({
@@ -28,19 +29,20 @@ export default {
         'page_components.section_with_buckets.buckets.description',
       ],
     })
+
     return {
       data: data[0],
     }
   },
   head(req) {
     return {
-      title: req.data.title,
+      title: this.data ? req.data.title : '',
       meta: [
         {
-          title: req.data.seo.meta_title,
-          name: req.data.seo.meta_title,
-          description: req.data.seo.meta_title,
-          keywords: req.data.seo.keywords,
+          title: this.data ? req.data.seo.meta_title : '',
+          name: this.data ? req.data.seo.meta_title : '',
+          description: this.data ? req.data.seo.meta_title : '',
+          keywords: this.data ? req.data.seo.keywords : '',
         },
       ],
     }

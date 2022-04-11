@@ -49,8 +49,7 @@
 </template>
 
 <script>
-import Stack from '../plugins/contentstack'
-import { onEntryChange } from '../plugins/contentstack'
+import Stack, { onEntryChange } from '../plugins/contentstack'
 
 export default {
   async fetch() {
@@ -58,6 +57,20 @@ export default {
       contentTypeUid: 'footer',
       jsonRtePath: ['copyright'],
     })
+    const responsePages = await Stack.getEntries({
+      contentTypeUid: 'page',
+    })
+    const navFooterList = this.data[0].navigation.link
+    if (responsePages.length !== this.data.length) {
+      responsePages.forEach((entry) => {
+        const fFound = this.data[0].navigation.link.find(
+          (link) => link.title === entry.title
+        )
+        if (!fFound) {
+          navFooterList.push({ title: entry.title, href: entry.url })
+        }
+      })
+    }
     this.$store.commit('setFooter', this.data[0])
   },
   mounted() {

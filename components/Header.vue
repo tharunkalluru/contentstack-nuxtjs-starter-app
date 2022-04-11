@@ -20,11 +20,10 @@
           />
         </NuxtLink>
       </div>
-      <input id="menu-btn" type="checkbox" class="menu-btn" /><label
-        class="menu-icon"
-        for="menu-btn"
-        ><span class="navicon"
-      /></label>
+      <input id="menu-btn" type="checkbox" class="menu-btn" />
+      <label class="menu-icon" for="menu-btn">
+        <span class="navicon" />
+      </label>
       <nav class="menu">
         <ul class="nav-ul header-ul">
           <li
@@ -39,16 +38,15 @@
         </ul>
       </nav>
       <div class="json-preview">
-        <Tooltip content="JSON Preview" direction="top"> </Tooltip>
+        <Tooltip content="JSON Preview" direction="top"></Tooltip>
       </div>
     </div>
   </header>
 </template>
 
 <script>
-import Stack from '../plugins/contentstack'
-import Tooltip from '../components/Tooltip'
-import { onEntryChange } from '../plugins/contentstack'
+import Tooltip from '../components/Tooltip';
+import Stack,{ onEntryChange } from '../plugins/contentstack';
 
 export default {
   components: {
@@ -60,6 +58,23 @@ export default {
       referenceFieldPath: `navigation_menu.page_reference`,
       jsonRtePath: ['notification_bar.announcement_text'],
     })
+    const responsePages = await Stack.getEntries({
+      contentTypeUid: 'page',
+    })
+    const navHeaderList = this.data[0].navigation_menu
+    if (responsePages.length !== this.data.length) {
+      responsePages.forEach((entry) => {
+        const hFound = this.data[0].navigation_menu.find(
+          (navLink) => navLink.label === entry.title
+        )
+        if (!hFound) {
+          navHeaderList.push({
+            label: entry.title,
+            page_reference: [{ title: entry.title, url: entry.url }],
+          })
+        }
+      })
+    }
     this.$store.commit('setHeader', this.data[0])
   },
   mounted() {

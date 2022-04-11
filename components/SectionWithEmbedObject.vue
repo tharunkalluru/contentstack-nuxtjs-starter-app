@@ -1,8 +1,8 @@
 <template>
   <div v-if="data">
     <div
-      class="contact-page-section max-width"
       v-if="data.html_code_alignment === 'Left'"
+      class="contact-page-section max-width"
     >
       <div class="contact-page-content">
         <h1>{{ data.title }}</h1>
@@ -11,8 +11,8 @@
       <div class="contact-page-form" v-html="data.html_code"></div>
     </div>
     <div
-      class="contact-maps-section max-width"
       v-if="data.html_code_alignment === 'Right'"
+      class="contact-maps-section max-width"
     >
       <div class="maps-details" v-html="data.html_code"></div>
       <div class="contact-maps-content">

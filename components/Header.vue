@@ -53,29 +53,8 @@ export default {
     Tooltip,
   },
   async fetch() {
-    this.data = await Stack.getEntries({
-      contentTypeUid: 'header',
-      referenceFieldPath: `navigation_menu.page_reference`,
-      jsonRtePath: ['notification_bar.announcement_text'],
-    })
-    const responsePages = await Stack.getEntries({
-      contentTypeUid: 'page',
-    })
-    const navHeaderList = this.data[0].navigation_menu
-    if (responsePages.length !== this.data.length) {
-      responsePages.forEach((entry) => {
-        const hFound = this.data[0].navigation_menu.find(
-          (navLink) => navLink.label === entry.title
-        )
-        if (!hFound) {
-          navHeaderList.push({
-            label: entry.title,
-            page_reference: [{ title: entry.title, url: entry.url }],
-          })
-        }
-      })
-    }
-    this.$store.commit('setHeader', this.data[0])
+    const response = await this.fetchData()
+    this.$store.commit('setHeader', response[0])
   },
   mounted() {
     onEntryChange(async () => {
@@ -92,6 +71,24 @@ export default {
         referenceFieldPath: `navigation_menu.page_reference`,
         jsonRtePath: ['notification_bar.announcement_text'],
       })
+      const responsePages = await Stack.getEntries({
+        contentTypeUid: 'page',
+      })
+      const navHeaderList = result[0].navigation_menu
+      if (responsePages.length !== result.length) {
+        responsePages.forEach((entry) => {
+          const hFound = result[0].navigation_menu.find(
+            (navLink) => navLink.label === entry.title
+          )
+          if (!hFound) {
+            navHeaderList.push({
+              label: entry.title,
+              page_reference: [{ title: entry.title, url: entry.url }],
+            })
+          }
+        })
+      }
+      result[0].navigation_menu = navHeaderList
       return result
     },
   },

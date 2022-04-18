@@ -1,7 +1,7 @@
 <template>
   <div class="hero-banner" :style="{ background: `${data.bg_color}` }">
     <div :class="[title === 'about-content' ? title : 'home-content']">
-      <h1 class="hero-title" :style="{ color: data.title_color ? data.title_color : '#000' }">
+      <h1 class="hero-title" :style="{ color: data.text_color ? data.text_color : '#000' }">
         {{ data.banner_title }}
       </h1>
       <p

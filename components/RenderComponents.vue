@@ -41,9 +41,9 @@
         :key="'section_with_buckets' + index"
         :data="component.section_with_buckets"
       />
-      <SectionWithBuckets
-        v-if="component.section_with_buckets && page !== 'Home'"
+      <AboutSectionBucket
         :key="'section_with_buckets' + index"
+        v-else-if="component.section_with_buckets && page === 'About Us'"
         :data="component.section_with_buckets"
       />
       <TeamSection
@@ -72,6 +72,7 @@ import SectionWithCards from '../components/SectionWithCards'
 import TeamSection from '../components/TeamSection'
 import SectionWithEmbedObject from '../components/SectionWithEmbedObject'
 import SectionWithBuckets from '../components/SectionWithBuckets'
+import AboutSectionBucket from '../components/AboutSectionBucket'
 import BlogSection from '../components/BlogSection'
 import Devtools from '../components/Devtools.vue'
 
@@ -80,6 +81,7 @@ export default {
     HeroBanner,
     Section,
     SectionWithBuckets,
+    AboutSectionBucket,
     SectionWithCards,
     TeamSection,
     BlogSection,

@@ -15,18 +15,18 @@
         <div class="modal-header">
           <h2 id="staticBackdropLabel" class="modal-title">
             JSON Preview
-            </h2>
+          </h2>
           <div
             class="tooltip-wrapper"
-            v-on:click="copyObject(JSON.stringify(response))"
+            @:click="copyObject(JSON.stringify(response))"
           >
             <div class="tooltip-copy">
               <img src="../static/copy.svg" class="copyIcon" alt="copy icon" />
-              <div class="tooltip-top-copy" v-if="this.componentKey > 0">
-                {{ this.messageCopied }}
+              <div v-if="componentKey > 0" class="tooltip-top-copy">
+                {{ messageCopied }}
               </div>
-              <div class="tooltip-top-copy" v-else>
-                {{ this.messageCopy }}
+              <div v-else class="tooltip-top-copy">
+                {{ messageCopy }}
               </div>
             </div>
           </div>
@@ -38,9 +38,9 @@
           />
         </div>
         <div class="modal-body">
-          <pre v-if="this.response" id="jsonViewer">
+          <pre v-if="response" id="jsonViewer">
             <json-viewer
-              :value="this.response"
+              :value="response"
                :copyable="false"
               >
               </json-viewer>
@@ -57,12 +57,34 @@ import 'vue-json-viewer/style.css'
 
 export default {
   components: { JsonViewer },
+  data() {
+    const { header, footer, page, blogPost } = this.$store.state
+    let response = {
+      headers: header || null,
+      footer: footer || null,
+    }
+    page && (response.page = page)
+    blogPost && (response.blog_post = blogPost)
+    response = this.filterObject(response)
+    return {
+      response,
+      messageCopy: 'Copy',
+      messageCopied: 'Copied',
+      componentKey: 0,
+    }
+  },
+  updated() {
+    this.componentKey &&
+      setTimeout(() => {
+        this.componentKey = 0
+      }, 300)
+  },
   methods: {
-    copyObject: function (response) {
+    copyObject(response) {
       navigator.clipboard.writeText(response)
       this.componentKey++
     },
-    filterObject: function (inputObject) {
+    filterObject(inputObject) {
       const unWantedProps = [
         'uid',
         '_version',
@@ -83,28 +105,6 @@ export default {
       }
       return inputObject
     },
-  },
-  data() {
-    const { header, footer, page, blogPost } = this.$store.state
-    let response = {
-      headers: header ? header : null,
-      footer: footer ? footer : null,
-    }
-    page && (response.page = page)
-    blogPost && (response.blog_post = blogPost)
-    response = this.filterObject(response)
-    return {
-      response,
-      messageCopy: 'Copy',
-      messageCopied: 'Copied',
-      componentKey: 0,
-    }
-  },
-  updated() {
-    this.componentKey &&
-      setTimeout(() => {
-        this.componentKey = 0
-      }, 300)
   },
 }
 </script>

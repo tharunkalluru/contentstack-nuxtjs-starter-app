@@ -3,7 +3,9 @@
     <span data-bs-toggle="modal" data-bs-target="#staticBackdrop">
       <img src="../static/json.svg" alt="JSON Preview icon" />
     </span>
-    <div class="Tooltip-top" ref="toolTipRef">JSON Preview</div>
+    <div ref="toolTipRef" class="Tooltip-top">
+      JSON Preview
+    </div>
   </div>
 </template>
 

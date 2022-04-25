@@ -7,9 +7,14 @@
         <p>
           {{ data.description }}
         </p>
-        <NuxtLink aria-current="page" class="btn secondary-btn" to="/">{{
-          data.call_to_action.title
-        }}</NuxtLink>
+        <router-link
+          v-if="data.call_to_action.title"
+          aria-current="page"
+          class="btn secondary-btn"
+          to="/"
+        >
+          {{ data.call_to_action.title }}
+        </router-link>
       </div>
     </template>
     <template v-else>
@@ -18,9 +23,14 @@
         <p>
           {{ data.description }}
         </p>
-        <NuxtLink aria-current="page" class="btn secondary-btn" to="/">{{
-          data.call_to_action.title
-        }}</NuxtLink>
+        <router-link
+          v-if="data.call_to_action.title"
+          aria-current="page"
+          class="btn secondary-btn"
+          to="/"
+        >
+          {{ data.call_to_action.title }}
+        </router-link>
       </div>
       <img :src="data.image.url" :alt="data.image.filename" />
     </template>

@@ -54,10 +54,9 @@
 <script>
 import moment from 'moment'
 
-import Stack from '../../plugins/contentstack'
 import BlogBanner from '../../components/BlogBanner'
 import Devtools from '../../components/Devtools.vue'
-import { onEntryChange } from '../../plugins/contentstack'
+import Stack,{ onEntryChange } from '../../plugins/contentstack'
 
 export default {
   components: {

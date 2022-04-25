@@ -16,7 +16,7 @@
         :data="component.hero_banner"
       />
       <HeroBanner
-        v-if="component.hero_banner && page === 'About Us'"
+        v-if="component.hero_banner && page !== 'Home'"
         :key="'hero_banner' + index"
         title="about-content"
         :data="component.hero_banner"
@@ -43,16 +43,21 @@
       />
       <AboutSectionBucket
         :key="'section_with_buckets' + index"
-        v-if="component.section_with_buckets && page === 'About Us'"
+        v-else-if="component.section_with_buckets && page === 'About Us'"
         :data="component.section_with_buckets"
       />
       <TeamSection
-        :key="'our_team' + index"
         v-if="component.our_team"
+        :key="'our_team' + index"
         :data="component.our_team"
       />
       <SectionWithEmbedObject
         v-if="component.section_with_html_code && page === 'Contact Us'"
+        :key="'section_with_html_code' + index"
+        :data="component.section_with_html_code"
+      />
+      <SectionWithEmbedObject
+        v-if="component.section_with_html_code && page !== 'Contact Us'"
         :key="'section_with_html_code' + index"
         :data="component.section_with_html_code"
       />

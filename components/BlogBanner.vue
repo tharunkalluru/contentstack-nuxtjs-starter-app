@@ -2,7 +2,9 @@
   <div>
     <div class="blog-page-banner" :style="{ background: `${data.bg_color}` }">
       <div class="blog-page-content">
-        <h1 class="hero-title">{{ data.banner_title }}</h1>
+        <h1 class="hero-title">
+          {{ data.banner_title }}
+        </h1>
         <p class="hero-description">
           {{ data.banner_description }}
         </p>

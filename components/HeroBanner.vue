@@ -32,8 +32,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+
+import { PropType } from 'vue'
+import Data from '../typescript/data'
+
 export default {
-  props: ['data', 'title']
-};
+
+  props: {
+    data: {
+      required: true,
+      type: Object as PropType<Data>
+    },
+    title: {
+      required: true,
+      type: String
+    }
+  }
+}
 </script>

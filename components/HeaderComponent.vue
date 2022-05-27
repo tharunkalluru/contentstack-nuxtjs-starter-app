@@ -44,19 +44,26 @@
   </header>
 </template>
 
-<script>
-import Tooltip from '../components/Tooltip';
-import Stack,{ onEntryChange } from '../plugins/contentstack';
+<script lang="ts">
+
+import Stack, { onEntryChange } from '../plugins/contentstack'
+import Links from '../typescript/data'
+import Tooltip from './ToolTip.vue'
+
+interface PageResponse {
+  title: string;
+  url: string;
+}
 
 export default {
   components: {
-    Tooltip,
+    Tooltip
   },
-  async fetch() {
+  async fetch () {
     const response = await this.fetchData()
     this.$store.commit('setHeader', response[0])
   },
-  mounted() {
+  mounted () {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
@@ -65,32 +72,32 @@ export default {
     })
   },
   methods: {
-    async fetchData() {
+    async fetchData () {
       const result = await Stack.getEntries({
         contentTypeUid: 'header',
         referenceFieldPath: `navigation_menu.page_reference`,
-        jsonRtePath: ['notification_bar.announcement_text'],
+        jsonRtePath: ['notification_bar.announcement_text']
       })
-      const responsePages = await Stack.getEntries({
-        contentTypeUid: 'page',
+      const responsePages: [PageResponse] = await Stack.getEntries({
+        contentTypeUid: 'page'
       })
       const navHeaderList = result[0].navigation_menu
       if (responsePages.length !== result.length) {
         responsePages.forEach((entry) => {
           const hFound = result[0].navigation_menu.find(
-            (navLink) => navLink.label === entry.title
+            (navLink: Links) => navLink.label === entry.title
           )
           if (!hFound) {
             navHeaderList.push({
               label: entry.title,
-              page_reference: [{ title: entry.title, url: entry.url }],
+              page_reference: [{ title: entry.title, url: entry.url }]
             })
           }
         })
       }
       result[0].navigation_menu = navHeaderList
       return result
-    },
-  },
+    }
+  }
 }
 </script>

@@ -51,26 +51,42 @@
   </main>
 </template>
 
-<script>
-import moment from 'moment'
+<script lang="ts">
 
-import BlogBanner from '../../components/BlogBanner'
-import Devtools from '../../components/Devtools.vue'
+import moment from 'moment'
+import BlogBanner from '../../components/BlogBanner.vue'
+import Devtools from '../../components/DevTools.vue'
 import Stack,{ onEntryChange } from '../../plugins/contentstack'
+import Data from '@/typescript/pages'
+import Req from '@/typescript/pages'
+
+interface List {
+    author: [];
+    body: string;
+    date: string;
+    featured_image:object;
+    is_archived: boolean;
+    related_post:[];
+    locale: string;
+    seo: object;
+    title: string;
+    url: string;
+}
+
 
 export default {
   components: {
     BlogBanner,
     Devtools,
   },
-  async asyncData(req) {
-    const archivedList = []
-    const recentBlog = []
+  async asyncData(req: any) {
+    const archivedList = [] as any
+    const recentBlog = [] as any
     const data = await Stack.getEntryByUrl({
       contentTypeUid: 'page',
       entryUrl: `${req.route.path}`,
     })
-    const list = await Stack.getEntries({
+    const list: [List] = await Stack.getEntries({
       contentTypeUid: 'blog_post',
       referenceFieldPath: [`author`, `related_post`],
       jsonRtePath: ['body'],
@@ -88,7 +104,7 @@ export default {
       recentBlog,
     }
   },
-  head(req) {
+  head(req: Req) {
     return {
       title: req.banner.title,
       meta: [
@@ -115,11 +131,11 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const data = await Stack.getEntryByUrl({
+        const data: [Data] = await Stack.getEntryByUrl({
           contentTypeUid: 'page',
           entryUrl: `${this.$route.path}`,
         })
-        const element = document.getElementsByClassName('cslp-tooltip')
+        const element: any = document.getElementsByClassName('cslp-tooltip')
         if (element.length > 0) {
           element[0].outerHTML = null
         }
@@ -130,7 +146,7 @@ export default {
         return false
       }
     },
-    moment(param) {
+    moment(param: string) {
       return moment(param).format('ddd, MMM D YYYY')
     },
   },

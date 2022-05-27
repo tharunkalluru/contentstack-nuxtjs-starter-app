@@ -48,15 +48,22 @@
   </footer>
 </template>
 
-<script>
+<script lang="ts">
+
 import Stack, { onEntryChange } from '../plugins/contentstack'
+import Links from '../typescript/data'
+
+interface PageResponse {
+  title: string;
+  url: string;
+}
 
 export default {
-  async fetch() {
+  async fetch () {
     const response = await this.fetchData()
     this.$store.commit('setFooter', response[0])
   },
-  mounted() {
+  mounted () {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
@@ -65,19 +72,19 @@ export default {
     })
   },
   methods: {
-    async fetchData() {
+    async fetchData () {
       const result = await Stack.getEntries({
         contentTypeUid: 'footer',
-        jsonRtePath: ['copyright'],
+        jsonRtePath: ['copyright']
       })
-      const responsePages = await Stack.getEntries({
-        contentTypeUid: 'page',
+      const responsePages: [PageResponse] = await Stack.getEntries({
+        contentTypeUid: 'page'
       })
       const navFooterList = result[0].navigation.link
       if (responsePages.length !== result.length) {
         responsePages.forEach((entry) => {
           const fFound = result[0].navigation.link.find(
-            (link) => link.title === entry.title
+            (link: Links) => link.title === entry.title
           )
           if (!fFound) {
             navFooterList.push({ title: entry.title, href: entry.url })
@@ -86,7 +93,7 @@ export default {
       }
       result[0].navigation.link = navFooterList
       return result
-    },
-  },
+    }
+  }
 }
 </script>

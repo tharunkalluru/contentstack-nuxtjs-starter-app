@@ -14,13 +14,14 @@ import RenderComponents from '../components/RenderComponents.vue'
 import NotFound from '../layouts/ErrorLayout.vue';
 import Stack, { onEntryChange } from '../plugins/contentstack'
 import Req from '@/typescript/pages'
+import PageData from '@/typescript/pages'
 
 export default {
   components: {
     RenderComponents,
     NotFound
   },
-  async asyncData(req: any) {
+  async asyncData(req: PageData) {
     const data = await Stack.getEntryByUrl({
       contentTypeUid: 'page',
       entryUrl: `${req.route.fullPath}`,
@@ -70,9 +71,9 @@ export default {
           'page_components.section_with_buckets.buckets.description',
         ],
       })
-      const element: any = document.getElementsByClassName('cslp-tooltip')
+      const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
       if (element.length > 0) {
-        element[0].outerHTML = null
+        element[0].outerHTML = ''
       }
       return result
     },

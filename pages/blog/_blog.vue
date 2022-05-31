@@ -42,14 +42,14 @@ import Devtools from '../../components/DevTools.vue'
 import Stack, { onEntryChange } from '../../plugins/contentstack'
 import Data from '@/typescript/pages'
 import Req from '@/typescript/pages'
-// import PageData from '@/typescript/pages'
+import PageData from '@/typescript/pages'
 
 export default {
   components: {
     BlogBanner,
     Devtools,
   },
-  async asyncData(req: any) {
+  async asyncData(req: PageData) {
     try {
       const banner = await Stack.getEntryByUrl({
         contentTypeUid: 'page',
@@ -101,9 +101,9 @@ export default {
           referenceFieldPath: [`related_post`, `author`],
           jsonRtePath: ['body', 'related_post.body'],
         })
-        const element: any = document.getElementsByClassName('cslp-tooltip')
+        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
         if (element.length > 0) {
-          element[0].outerHTML = null
+          element[0].outerHTML = ''
         }
         return {
           data: data[0],

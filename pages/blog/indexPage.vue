@@ -59,6 +59,7 @@ import Devtools from '../../components/DevTools.vue'
 import Stack,{ onEntryChange } from '../../plugins/contentstack'
 import Data from '@/typescript/pages'
 import Req from '@/typescript/pages'
+import PageData from '@/typescript/pages'
 
 interface List {
     author: [];
@@ -79,7 +80,7 @@ export default {
     BlogBanner,
     Devtools,
   },
-  async asyncData(req: any) {
+  async asyncData(req: PageData) {
     const archivedList = [] as any
     const recentBlog = [] as any
     const data = await Stack.getEntryByUrl({
@@ -135,9 +136,9 @@ export default {
           contentTypeUid: 'page',
           entryUrl: `${this.$route.path}`,
         })
-        const element: any = document.getElementsByClassName('cslp-tooltip')
+        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
         if (element.length > 0) {
-          element[0].outerHTML = null
+          element[0].outerHTML = ''
         }
         return {
           data: data[0],

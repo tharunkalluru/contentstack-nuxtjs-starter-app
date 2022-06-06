@@ -51,17 +51,43 @@
     </div>
   </div>
 </template>
-<script>
+
+<script lang="ts">
+
 import JsonViewer from 'vue-json-viewer/ssr'
 import 'vue-json-viewer/style.css'
 
+interface Header {
+  local: string;
+  logo: string;
+  navigation_menu: [];
+  notification_bar: string;
+  title: string;
+}
+
+interface Footer {
+  local: string;
+  logo: string;
+  copyright: string;
+  navigation: [];
+  social: string;
+  title: string;
+}
+
+interface Response {
+    page?: string;
+    blog_post?: string;
+    headers: Header;
+    footer: Footer;
+}
+
 export default {
   components: { JsonViewer },
-  data() {
+  data () {
     const { header, footer, page, blogPost } = this.$store.state
-    let response = {
+    let response: Response = {
       headers: header || null,
-      footer: footer || null,
+      footer: footer || null
     }
     page && (response.page = page)
     blogPost && (response.blog_post = blogPost)
@@ -70,21 +96,21 @@ export default {
       response,
       messageCopy: 'Copy',
       messageCopied: 'Copied',
-      componentKey: 0,
+      componentKey: 0
     }
   },
-  updated() {
+  updated () {
     this.componentKey &&
       setTimeout(() => {
         this.componentKey = 0
       }, 300)
   },
   methods: {
-    copyObject(response) {
+    copyObject (response: string) {
       navigator.clipboard.writeText(response)
       this.componentKey++
     },
-    filterObject(inputObject) {
+    filterObject (inputObject: any) {
       const unWantedProps = [
         'uid',
         '_version',
@@ -94,7 +120,7 @@ export default {
         'created_by',
         'updated_at',
         'updated_by',
-        'publish_details',
+        'publish_details'
       ]
       for (const key in inputObject) {
         unWantedProps.includes(key) && delete inputObject[key]
@@ -104,7 +130,7 @@ export default {
         inputObject[key] = this.filterObject(inputObject[key])
       }
       return inputObject
-    },
-  },
+    }
+  }
 }
 </script>

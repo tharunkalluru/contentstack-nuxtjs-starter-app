@@ -59,15 +59,20 @@ export default {
       },
     ],
   },
+
   css: [],
 
   plugins: [],
 
   components: true,
 
-  buildModules: ['@nuxtjs/eslint-module'],
+  buildModules: [
+    '@nuxt/typescript-build',
+    '@nuxtjs/eslint-module',
+  ],
 
   modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxt/content', '@nuxtjs/robots', '@nuxtjs/router'],
+
   robots: {
     UserAgent: '*',
   },
@@ -83,6 +88,7 @@ export default {
       theme_color: '#317EFB',
     },
   },
+
   axios: {},
 
   content: {},

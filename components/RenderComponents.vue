@@ -42,8 +42,8 @@
         :data="component.section_with_buckets"
       />
       <AboutSectionBucket
-        :key="'section_with_buckets' + index"
         v-else-if="component.section_with_buckets && page === 'About Us'"
+        :key="'section_with_buckets' + index"
         :data="component.section_with_buckets"
       />
       <TeamSection
@@ -65,16 +65,17 @@
   </main>
 </template>
 
-<script>
-import HeroBanner from '../components/HeroBanner'
-import Section from '../components/Section'
-import SectionWithCards from '../components/SectionWithCards'
-import TeamSection from '../components/TeamSection'
-import SectionWithEmbedObject from '../components/SectionWithEmbedObject'
-import SectionWithBuckets from '../components/SectionWithBuckets'
-import AboutSectionBucket from '../components/AboutSectionBucket'
-import BlogSection from '../components/BlogSection'
-import Devtools from '../components/Devtools.vue'
+<script lang="ts">
+
+import BlogSection from '../components/BlogSection.vue'
+import AboutSectionBucket from '../components/AboutSectionBucket.vue'
+import SectionWithBuckets from '../components/SectionWithBuckets.vue'
+import SectionWithEmbedObject from '../components/SectionWithEmbedObject.vue'
+import TeamSection from '../components/TeamSection.vue'
+import SectionWithCards from '../components/SectionWithCards.vue'
+import HeroBanner from '../components/HeroBanner.vue'
+import Section from './SectionComponent.vue'
+import Devtools from './DevTools.vue'
 
 export default {
   components: {
@@ -86,8 +87,25 @@ export default {
     TeamSection,
     BlogSection,
     SectionWithEmbedObject,
-    Devtools,
+    Devtools
   },
-  props: ['components', 'page', 'entryUid', 'locale'],
+  props: {
+    components: {
+      required: true,
+      type: Array
+    },
+    page: {
+      required: true,
+      type: String
+    },
+    entryUid: {
+      required: true,
+      type: String
+    },
+    locale: {
+      required: true,
+      type: String
+    }
+  }
 }
 </script>

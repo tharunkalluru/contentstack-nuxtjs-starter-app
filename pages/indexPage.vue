@@ -9,17 +9,19 @@
   <NotFound v-else-if="!data" />
 </template>
 
-<script>
-import RenderComponents from '../components/RenderComponents'
-import NotFound from '../layouts/error';
+<script lang="ts">
+import RenderComponents from '../components/RenderComponents.vue'
+import NotFound from '../layouts/ErrorLayout.vue';
 import Stack, { onEntryChange } from '../plugins/contentstack'
+import Req from '@/typescript/pages'
+import PageData from '@/typescript/pages'
 
 export default {
   components: {
     RenderComponents,
     NotFound
   },
-  async asyncData(req) {
+  async asyncData(req: PageData) {
     const data = await Stack.getEntryByUrl({
       contentTypeUid: 'page',
       entryUrl: `${req.route.fullPath}`,
@@ -34,7 +36,7 @@ export default {
       data: data[0],
     }
   },
-  head(req) {
+  head(req: Req) {
     return {
       title: this.data ? req.data.title : '',
       meta: [
@@ -69,9 +71,9 @@ export default {
           'page_components.section_with_buckets.buckets.description',
         ],
       })
-      const element = document.getElementsByClassName('cslp-tooltip')
+      const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
       if (element.length > 0) {
-        element[0].outerHTML = null
+        element[0].outerHTML = ''
       }
       return result
     },

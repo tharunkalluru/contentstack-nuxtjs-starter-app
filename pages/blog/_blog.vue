@@ -34,19 +34,22 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
 import moment from 'moment'
 
-import BlogBanner from '../../components/BlogBanner'
-import Devtools from '../../components/Devtools.vue'
+import BlogBanner from '../../components/BlogBanner.vue'
+import Devtools from '../../components/DevTools.vue'
 import Stack, { onEntryChange } from '../../plugins/contentstack'
+import Data from '@/typescript/pages'
+import Req from '@/typescript/pages'
+import PageData from '@/typescript/pages'
 
 export default {
   components: {
     BlogBanner,
     Devtools,
   },
-  async asyncData(req) {
+  async asyncData(req: PageData) {
     try {
       const banner = await Stack.getEntryByUrl({
         contentTypeUid: 'page',
@@ -66,7 +69,7 @@ export default {
       return false
     }
   },
-  head(req) {
+  head(req: Req) {
     return {
       title: req.data.title,
       meta: [
@@ -92,15 +95,15 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const data = await Stack.getEntryByUrl({
+        const data: [Data] = await Stack.getEntryByUrl({
           contentTypeUid: 'blog_post',
           entryUrl: `${this.$route.fullPath}`,
           referenceFieldPath: [`related_post`, `author`],
           jsonRtePath: ['body', 'related_post.body'],
         })
-        const element = document.getElementsByClassName('cslp-tooltip')
+        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
         if (element.length > 0) {
-          element[0].outerHTML = null
+          element[0].outerHTML = ''
         }
         return {
           data: data[0],
@@ -109,7 +112,7 @@ export default {
         return false
       }
     },
-    moment(param) {
+    moment(param: string) {
       return moment(param).format('ddd, MMM D YYYY')
     },
   },

@@ -16,7 +16,7 @@
         :data="component.hero_banner"
       />
       <HeroBanner
-        v-if="component.hero_banner && page === 'About Us'"
+        v-if="component.hero_banner && page !== 'Home'"
         :key="'hero_banner' + index"
         title="about-content"
         :data="component.hero_banner"
@@ -42,13 +42,13 @@
         :data="component.section_with_buckets"
       />
       <AboutSectionBucket
+        v-else-if="component.section_with_buckets && page === 'About Us'"
         :key="'section_with_buckets' + index"
-        v-if="component.section_with_buckets && page === 'About Us'"
         :data="component.section_with_buckets"
       />
       <TeamSection
-        :key="'our_team' + index"
         v-if="component.our_team"
+        :key="'our_team' + index"
         :data="component.our_team"
       />
       <SectionWithEmbedObject
@@ -56,20 +56,26 @@
         :key="'section_with_html_code' + index"
         :data="component.section_with_html_code"
       />
+      <SectionWithEmbedObject
+        v-if="component.section_with_html_code && page !== 'Contact Us'"
+        :key="'section_with_html_code' + index"
+        :data="component.section_with_html_code"
+      />
     </template>
   </main>
 </template>
 
-<script>
-import HeroBanner from '../components/HeroBanner'
-import Section from '../components/Section'
-import SectionWithCards from '../components/SectionWithCards'
-import TeamSection from '../components/TeamSection'
-import SectionWithEmbedObject from '../components/SectionWithEmbedObject'
-import SectionWithBuckets from '../components/SectionWithBuckets'
-import AboutSectionBucket from '../components/AboutSectionBucket'
-import BlogSection from '../components/BlogSection'
-import Devtools from '../components/Devtools.vue'
+<script lang="ts">
+
+import BlogSection from '../components/BlogSection.vue'
+import AboutSectionBucket from '../components/AboutSectionBucket.vue'
+import SectionWithBuckets from '../components/SectionWithBuckets.vue'
+import SectionWithEmbedObject from '../components/SectionWithEmbedObject.vue'
+import TeamSection from '../components/TeamSection.vue'
+import SectionWithCards from '../components/SectionWithCards.vue'
+import HeroBanner from '../components/HeroBanner.vue'
+import Section from './SectionComponent.vue'
+import Devtools from './DevTools.vue'
 
 export default {
   components: {
@@ -81,8 +87,25 @@ export default {
     TeamSection,
     BlogSection,
     SectionWithEmbedObject,
-    Devtools,
+    Devtools
   },
-  props: ['components', 'page', 'entryUid', 'locale'],
+  props: {
+    components: {
+      required: true,
+      type: Array
+    },
+    page: {
+      required: true,
+      type: String
+    },
+    entryUid: {
+      required: true,
+      type: String
+    },
+    locale: {
+      required: true,
+      type: String
+    }
+  }
 }
 </script>

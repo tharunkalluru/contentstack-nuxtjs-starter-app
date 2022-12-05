@@ -1,6 +1,8 @@
 import * as contentstack from 'contentstack'
 import * as Utils from '@contentstack/utils'
 
+import ContentstackLivePreview from '@contentstack/live-preview-utils'
+
 const Stack = contentstack.Stack({
   api_key: process.env.CONTENTSTACK_API_KEY,
   delivery_token: process.env.CONTENTSTACK_DELIVERY_TOKEN,
@@ -8,16 +10,40 @@ const Stack = contentstack.Stack({
   region: process.env.CONTENTSTACK_REGION
     ? process.env.CONTENTSTACK_REGION
     : 'us',
+  live_preview: {
+    management_token: process.env.CONTENTSTACK_MANAGEMENT_TOKEN
+      ? process.env.CONTENTSTACK_MANAGEMENT_TOKEN
+      : '',
+    enable: true,
+    host: process.env.CONTENTSTACK_API_HOST
+      ? process.env.CONTENTSTACK_API_HOST
+      : '',
+  },
 })
-
-if (process.env.CONTENTSTACK_API_HOST)
-  Stack.setHost(process.env.CONTENTSTACK_API_HOST)
 
 const renderOption = {
   ['span']: (node, next) => {
     return next(node.children)
   },
 }
+
+/**
+ * initialize live preview
+ */
+ContentstackLivePreview.init({
+  enable: true,
+  stackSdk: Stack,
+  clientUrlParams: {
+    host: process.env.CONTENTSTACK_APP_HOST
+      ? process.env.CONTENTSTACK_APP_HOST
+      : '',
+  },
+  ssr: false,
+})
+
+Stack.setHost(process.env.CONTENTSTACK_API_HOST)
+
+export const onEntryChange = ContentstackLivePreview.onEntryChange
 
 export default {
   /**

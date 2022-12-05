@@ -22,4 +22,5 @@ We have created an in-depth tutorial on how you can create a starter website usi
 ## Documentation
 
 - [Contentstack documentation](https://www.contentstack.com/docs/)
+- [Region support documentation](https://www.contentstack.com/docs/developers/selecting-region-in-contentstack-starter-apps)
 - [Nuxt.js documentation](https://nuxtjs.org/docs/2.x/get-started/installation)

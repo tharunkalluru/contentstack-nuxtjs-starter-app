@@ -7,9 +7,14 @@
         <p>
           {{ data.description }}
         </p>
-        <NuxtLink aria-current="page" class="btn secondary-btn" to="/">{{
-          data.call_to_action.title
-        }}</NuxtLink>
+        <router-link
+          v-if="data.call_to_action.title"
+          aria-current="page"
+          class="btn secondary-btn"
+          to="/"
+        >
+          {{ data.call_to_action.title }}
+        </router-link>
       </div>
     </template>
     <template v-else>
@@ -18,17 +23,31 @@
         <p>
           {{ data.description }}
         </p>
-        <NuxtLink aria-current="page" class="btn secondary-btn" to="/">{{
-          data.call_to_action.title
-        }}</NuxtLink>
+        <router-link
+          v-if="data.call_to_action.title"
+          aria-current="page"
+          class="btn secondary-btn"
+          to="/"
+        >
+          {{ data.call_to_action.title }}
+        </router-link>
       </div>
       <img :src="data.image.url" :alt="data.image.filename" />
     </template>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+
+import { PropType } from 'vue'
+import Data from '../typescript/data'
+
 export default {
-  props: ['data'],
+  props: {
+    data: {
+      required: true,
+      type: Object as PropType<Data>
+    }
+  }
 }
 </script>

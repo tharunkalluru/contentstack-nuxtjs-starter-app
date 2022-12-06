@@ -1,16 +1,20 @@
 <template>
   <div class="container">
-    <div v-if="error.statusCode === 404" class="error-page">
+    <div class="error-page">
       <h1>404: Not Found</h1>
       <p>You just hit a route that doesn&#39;t exist... the sadness.</p>
-      <NuxtLink to="/">Navigate to home page</NuxtLink>
+      <NuxtLink to="/">
+        Navigate to home page
+      </NuxtLink>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-  props: ['error'],
-  layout: 'blog',
+  layout: 'error',
+  props: ['error']
+  // layout: 'blog',
 }
 </script>
+

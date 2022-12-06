@@ -18,7 +18,7 @@
                 alt="blog img"
                 class="blog-list-img"
                 :src="list.featured_image.url"
-              >
+              />
             </NuxtLink>
             <div class="blog-content">
               <NuxtLink :to="list.url">
@@ -51,23 +51,47 @@
   </main>
 </template>
 
-<script>
-import moment from 'moment'
+<script lang="ts">
 
-import Stack from '../../plugins/contentstack'
-import BlogBanner from '../../components/BlogBanner'
-import Devtools from '../../components/Devtools.vue'
+import moment from 'moment'
+import BlogBanner from '../../components/BlogBanner.vue'
+import Devtools from '../../components/DevTools.vue'
+import Stack,{ onEntryChange } from '../../plugins/contentstack'
+import Data from '@/typescript/pages'
+import Req from '@/typescript/pages'
+import PageData from '@/typescript/pages'
+
+interface List {
+    author: [];
+    body: string;
+    date: string;
+    featured_image:object;
+    is_archived: boolean;
+    related_post:[];
+    locale: string;
+    seo: object;
+    title: string;
+    url: string;
+}
+
 
 export default {
   components: {
     BlogBanner,
     Devtools,
   },
-  async asyncData(req) {
-    const archivedList = []
-    const recentBlog = []
-    const data = await Stack.getEntryByUrl({contentTypeUid:'page', entryUrl:`${req.route.path}`})
-    const list = await Stack.getEntries({contentTypeUid:'blog_post',referenceFieldPath: [`author`, `related_post`], jsonRtePath:["body"]})
+  async asyncData(req: PageData) {
+    const archivedList = [] as any
+    const recentBlog = [] as any
+    const data = await Stack.getEntryByUrl({
+      contentTypeUid: 'page',
+      entryUrl: `${req.route.path}`,
+    })
+    const list: [List] = await Stack.getEntries({
+      contentTypeUid: 'blog_post',
+      referenceFieldPath: [`author`, `related_post`],
+      jsonRtePath: ['body'],
+    })
     list.forEach((item) => {
       if (item.is_archived) {
         archivedList.push(item)
@@ -81,7 +105,7 @@ export default {
       recentBlog,
     }
   },
-  head(req) {
+  head(req: Req) {
     return {
       title: req.banner.title,
       meta: [
@@ -95,12 +119,35 @@ export default {
     }
   },
   mounted() {
+    onEntryChange(async () => {
+      if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
+        const response = await this.fetchData()
+        this.banner = response.data
+      }
+    })
     this.$store.commit('setPage', this.banner)
     const concat = this.archivedList.concat(this.recentBlog)
     this.$store.commit('setBlogpost', concat)
   },
   methods: {
-    moment(param) {
+    async fetchData() {
+      try {
+        const data: [Data] = await Stack.getEntryByUrl({
+          contentTypeUid: 'page',
+          entryUrl: `${this.$route.path}`,
+        })
+        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
+        if (element.length > 0) {
+          element[0].outerHTML = ''
+        }
+        return {
+          data: data[0],
+        }
+      } catch (e) {
+        return false
+      }
+    },
+    moment(param: string) {
       return moment(param).format('ddd, MMM D YYYY')
     },
   },

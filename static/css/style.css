@@ -1243,3 +1243,7 @@ footer a {
 #jsonViewer {
   margin-bottom: -1rem;
 }
+
+#cslp-tooltip {
+  display: none !important;
+}

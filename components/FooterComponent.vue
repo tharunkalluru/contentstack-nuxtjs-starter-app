@@ -32,15 +32,14 @@
       </div>
       <div class="col-quarter social-link">
         <div class="social-nav">
-          <template v-for="index in $store.state.footer.social.social_share">
-            <NuxtLink
-              :key="index.title"
-              :to="index.link.href"
-              :title="index.title"
-            >
-              <img :src="index.icon.url" :alt="index.icon.title" />
-            </NuxtLink>
-          </template>
+          <a
+            v-for="index in $store.state.footer.social.social_share"
+            :key="index.title"
+            :href="index.link.href"
+            :title="index.title"
+          >
+            <img :src="index.icon.url" :alt="index.icon.title" />
+          </a>
         </div>
       </div>
     </div>
@@ -49,21 +48,20 @@
 </template>
 
 <script lang="ts">
-
 import Stack, { onEntryChange } from '../plugins/contentstack'
 import Links from '../typescript/data'
 
 interface PageResponse {
-  title: string;
-  url: string;
+  title: string
+  url: string
 }
 
 export default {
-  async fetch () {
+  async fetch() {
     const response = await this.fetchData()
     this.$store.commit('setFooter', response[0])
   },
-  mounted () {
+  mounted() {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
@@ -72,13 +70,13 @@ export default {
     })
   },
   methods: {
-    async fetchData () {
+    async fetchData() {
       const result = await Stack.getEntries({
         contentTypeUid: 'footer',
-        jsonRtePath: ['copyright']
+        jsonRtePath: ['copyright'],
       })
       const responsePages: [PageResponse] = await Stack.getEntries({
-        contentTypeUid: 'page'
+        contentTypeUid: 'page',
       })
       const navFooterList = result[0].navigation.link
       if (responsePages.length !== result.length) {
@@ -93,7 +91,7 @@ export default {
       }
       result[0].navigation.link = navFooterList
       return result
-    }
-  }
+    },
+  },
 }
 </script>

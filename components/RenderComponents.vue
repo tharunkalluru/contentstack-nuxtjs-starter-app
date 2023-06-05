@@ -5,23 +5,20 @@
     data-contenttype="page"
     :data-locale="locale"
   >
-    <ClientOnly>
-      <Devtools />
-    </ClientOnly>
     <template v-for="(component, index) in components">
       <HeroBanner
-        v-if="component.hero_banner && page === 'Home'"
+        v-if="component.hero_banner && page !== 'Blog'"
         :key="'hero_banner' + index"
         title="home-content"
         :data="component.hero_banner"
       />
-      <HeroBanner
-        v-if="component.hero_banner && page !== 'Home'"
+      <BlogBanner
+        v-if="component.hero_banner && page === 'Blog'"
         :key="'hero_banner' + index"
         title="about-content"
         :data="component.hero_banner"
       />
-      <Section
+      <SectionComponents
         v-if="component.section"
         :key="'section' + index"
         :data="component.section"
@@ -66,33 +63,34 @@
 </template>
 
 <script lang="ts">
-
+import { PropType } from "vue"
 import BlogSection from '../components/BlogSection.vue'
+import BlogBanner from '../components/BlogBanner.vue'
 import AboutSectionBucket from '../components/AboutSectionBucket.vue'
 import SectionWithBuckets from '../components/SectionWithBuckets.vue'
 import SectionWithEmbedObject from '../components/SectionWithEmbedObject.vue'
 import TeamSection from '../components/TeamSection.vue'
 import SectionWithCards from '../components/SectionWithCards.vue'
 import HeroBanner from '../components/HeroBanner.vue'
-import Section from './SectionComponent.vue'
-import Devtools from './DevTools.vue'
+import type {ComponentsProps} from "../typescript/pages"
+import SectionComponents from './SectionComponent.vue'
 
 export default {
   components: {
     HeroBanner,
-    Section,
+    BlogBanner,
+    SectionComponents,
     SectionWithBuckets,
     AboutSectionBucket,
     SectionWithCards,
     TeamSection,
     BlogSection,
     SectionWithEmbedObject,
-    Devtools
   },
   props: {
     components: {
       required: true,
-      type: Array
+      type: Array as PropType<ComponentsProps[]>
     },
     page: {
       required: true,

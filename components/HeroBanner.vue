@@ -1,19 +1,21 @@
 <template>
   <div class="hero-banner" :style="{ background: `${data.bg_color}` }">
     <div :class="[title === 'about-content' ? title : 'home-content']">
-      <h1 class="hero-title" :style="{ color: data.text_color ? data.text_color : '#000' }">
+      <h1
+        class="hero-title"
+        :style="{ color: data.text_color ? data.text_color : '#000' }"
+      >
         {{ data.banner_title }}
       </h1>
       <p
         :class="[
           'hero-description',
-          title === 'about-content' ? 'about-desc' : ''
+          title === 'about-content' ? 'about-desc' : '',
         ]"
         :style="{ color: data.text_color ? data.text_color : '#737b7d' }"
       >
         {{ data.banner_description }}
       </p>
-      <template>
         <router-link
           v-if="data.call_to_action.title && data.call_to_action.href"
           aria-current="page"
@@ -22,7 +24,6 @@
         >
           {{ data.call_to_action.title }}
         </router-link>
-      </template>
     </div>
     <img
       v-if="data.banner_image"
@@ -33,21 +34,19 @@
 </template>
 
 <script lang="ts">
-
 import { PropType } from 'vue'
-import Data from '../typescript/data'
+import { HeroBanner } from '../typescript/components'
 
 export default {
-
   props: {
     data: {
       required: true,
-      type: Object as PropType<Data>
+      type: Object as PropType<HeroBanner>,
     },
     title: {
       required: true,
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 }
 </script>

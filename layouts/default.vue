@@ -1,18 +1,42 @@
 <template>
   <div>
-    <Header />
+    <HeaderComponent v-if="header.title" :header="header" />
     <Nuxt />
-    <Footer />
+    <FooterComponent v-if="footer.title" :footer="footer" />
+    <DevTools />
   </div>
 </template>
 
 <script lang="ts">
-import Header from '../components/HeaderComponent.vue'
-import Footer from '../components/FooterComponent.vue'
+import HeaderComponent from '../components/HeaderComponent.vue'
+import FooterComponent from '../components/FooterComponent.vue'
+import DevTools from '../components/DevTools.vue'
+import { FooterRes, HeaderRes } from '../typescript/response'
+import {
+  filterFooterLinks,
+  filterHeaderNav,
+  getAllEntries,
+  getFooter,
+  getHeader,
+} from '~/helper'
 export default {
   components: {
-    Header,
-    Footer,
+    HeaderComponent,
+    FooterComponent,
+    DevTools,
+  },
+  data() {
+    return {
+      header: null as HeaderRes | null,
+      footer: null as FooterRes | null,
+    }
+  },
+  async fetch() {
+    this.header = await getHeader()
+    this.footer = await getFooter()
+    const allEntries = await getAllEntries()
+    this.header = filterHeaderNav(allEntries, this.header)
+    this.footer = filterFooterLinks(allEntries, this.footer)
   },
 }
 </script>

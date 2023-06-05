@@ -17,13 +17,13 @@
 <script lang="ts">
 
 import { PropType } from 'vue'
-import Data from '../typescript/data'
+import {SectionWithCards} from '../typescript/components'
 
 export default {
   props: {
     data: {
       required: true,
-      type: Object as PropType<Data>
+      type: Object as PropType<SectionWithCards>
     }
   }
 }

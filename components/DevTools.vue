@@ -94,8 +94,6 @@ export default {
   },
   methods: {
     copyObject(response:string) {
-      console.log("clickings");
-      
       navigator.clipboard.writeText(response)
       this.componentKey++
     },

@@ -16,7 +16,7 @@
           <h2 id="staticBackdropLabel" class="modal-title">JSON Preview</h2>
           <div
             class="tooltip-wrapper"
-            @:npmclick="copyObject(JSON.stringify(response))"
+            @click="copyObject(JSON.stringify(response))"
           >
             <div class="tooltip-copy">
               <img src="../static/copy.svg" class="copyIcon" alt="copy icon" />

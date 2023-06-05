@@ -30,7 +30,7 @@
               </NuxtLink>
               <p>
                 {{ moment(list.date) }},
-                <!-- <strong v-if="list.author">{{ list.author[0].title }}</strong> -->
+                <strong v-if="list.author">{{ list.author[0].title }}</strong>
               </p>
               <p v-if="list.body" v-html="list.body.slice(0, 250)" />
               <NuxtLink v-if="list.url" :to="list.url">

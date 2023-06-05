@@ -13,12 +13,10 @@
     >
       <div class="modal-content">
         <div class="modal-header">
-          <h2 id="staticBackdropLabel" class="modal-title">
-            JSON Preview
-          </h2>
+          <h2 id="staticBackdropLabel" class="modal-title">JSON Preview</h2>
           <div
             class="tooltip-wrapper"
-            @:click="copyObject(JSON.stringify(response))"
+            @:npmclick="copyObject(JSON.stringify(response))"
           >
             <div class="tooltip-copy">
               <img src="../static/copy.svg" class="copyIcon" alt="copy icon" />
@@ -38,12 +36,14 @@
           />
         </div>
         <div class="modal-body">
-          <pre v-if="response" id="jsonViewer">
+          <pre id="jsonViewer">
             <json-viewer
               :value="response"
+              :expand-depth=1
                :copyable="false"
               >
               </json-viewer>
+
           </pre>
         </div>
         <div class="modal-footer"></div>
@@ -53,84 +53,52 @@
 </template>
 
 <script lang="ts">
-
 import JsonViewer from 'vue-json-viewer/ssr'
 import 'vue-json-viewer/style.css'
-
-interface Header {
-  local: string;
-  logo: string;
-  navigation_menu: [];
-  notification_bar: string;
-  title: string;
-}
-
-interface Footer {
-  local: string;
-  logo: string;
-  copyright: string;
-  navigation: [];
-  social: string;
-  title: string;
-}
+import { filterObject } from '~/helper'
+import { BlogPost, Page } from "~/typescript/pages"
+import { FooterRes, HeaderRes } from "~/typescript/response"
 
 interface Response {
-    page?: string;
-    blog_post?: string;
-    headers: Header;
-    footer: Footer;
+  page?: Page
+  blog_post?: BlogPost
+  headers: HeaderRes
+  footer: FooterRes
+  blogList?:BlogPost[]
 }
 
 export default {
   components: { JsonViewer },
-  data () {
-    const { header, footer, page, blogPost } = this.$store.state
+  data() {
+    const { header, footer, page, blogPost, blogList } = this.$store.state
     let response: Response = {
       headers: header || null,
-      footer: footer || null
+      footer: footer || null,
     }
     page && (response.page = page)
     blogPost && (response.blog_post = blogPost)
-    response = this.filterObject(response)
+    blogList && (response.blogList = blogList)
+    response = filterObject(response)
     return {
       response,
       messageCopy: 'Copy',
       messageCopied: 'Copied',
-      componentKey: 0
+      componentKey: 0,
     }
   },
-  updated () {
+  updated() {
     this.componentKey &&
       setTimeout(() => {
         this.componentKey = 0
       }, 300)
   },
   methods: {
-    copyObject (response: string) {
+    copyObject(response:string) {
+      console.log("clickings");
+      
       navigator.clipboard.writeText(response)
       this.componentKey++
     },
-    filterObject (inputObject: any) {
-      const unWantedProps = [
-        'uid',
-        '_version',
-        'ACL',
-        '_in_progress',
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
-        'publish_details'
-      ]
-      for (const key in inputObject) {
-        unWantedProps.includes(key) && delete inputObject[key]
-        if (typeof inputObject[key] !== 'object') {
-          continue
-        }
-        inputObject[key] = this.filterObject(inputObject[key])
-      }
-      return inputObject
-    }
-  }
+  },
 }
 </script>

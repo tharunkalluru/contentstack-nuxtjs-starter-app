@@ -1,9 +1,12 @@
 <template>
   <main v-show="banner">
-    <BlogBanner :data="banner.page_components[0].hero_banner" />
-    <ClientOnly>
-      <Devtools />
-    </ClientOnly>
+    <RenderComponents
+      v-if="banner"
+      :components="banner.page_components"
+      :page="banner.title"
+      :entryUid="banner.uid"
+      :locale="banner.locale"
+    />
     <div
       class="blog-container"
       :data-pageref="banner.uid"
@@ -11,25 +14,26 @@
       :data-locale="banner.locale"
     >
       <div class="blog-column-left">
-        <template v-for="(list, index) in recentBlog">
-          <div :key="index" class="blog-list">
-            <NuxtLink :to="list.url">
+        <template v-for="(list, index) in recentBlogs">
+          <div v-if="list" :key="index" class="blog-list">
+            <NuxtLink v-if="list.url" :to="list.url">
               <img
+                v-if="list.featured_image.url"
                 alt="blog img"
                 class="blog-list-img"
                 :src="list.featured_image.url"
               />
             </NuxtLink>
             <div class="blog-content">
-              <NuxtLink :to="list.url">
+              <NuxtLink v-if="list.url" :to="list.url">
                 <h3>{{ list.title }}</h3>
               </NuxtLink>
               <p>
                 {{ moment(list.date) }},
-                <strong>{{ list.author[0].title }}</strong>
+                <!-- <strong v-if="list.author">{{ list.author[0].title }}</strong> -->
               </p>
-              <p v-html="list.body.slice(0, 250)" />
-              <NuxtLink :to="list.url">
+              <p v-if="list.body" v-html="list.body.slice(0, 250)" />
+              <NuxtLink v-if="list.url" :to="list.url">
                 <span>Read more --&gt;</span>
               </NuxtLink>
             </div>
@@ -38,9 +42,9 @@
       </div>
       <div class="blog-column-right">
         <h2>{{ banner.page_components[1].widget.title_h2 }}</h2>
-        <template v-for="(component, index) in archivedList">
+        <template v-for="(component, index) in archivedBlogs">
           <NuxtLink :key="index" :to="component.url">
-            <div>
+            <div :key="index">
               <h4>{{ component.title }}</h4>
               <p v-html="component.body.slice(0, 80)" />
             </div>
@@ -52,96 +56,72 @@
 </template>
 
 <script lang="ts">
-
 import moment from 'moment'
-import BlogBanner from '../../components/BlogBanner.vue'
-import Devtools from '../../components/DevTools.vue'
-import Stack,{ onEntryChange } from '../../plugins/contentstack'
-import Data from '@/typescript/pages'
-import Req from '@/typescript/pages'
-import PageData from '@/typescript/pages'
-
-interface List {
-    author: [];
-    body: string;
-    date: string;
-    featured_image:object;
-    is_archived: boolean;
-    related_post:[];
-    locale: string;
-    seo: object;
-    title: string;
-    url: string;
-}
-
+import { Context } from '@nuxt/types'
+import RenderComponents from '../../components/RenderComponents.vue'
+import { onEntryChange } from '../../plugins/contentstack'
+import { Seo } from '~/typescript/components'
+import { getBlogList, getPage } from '~/helper'
 
 export default {
   components: {
-    BlogBanner,
-    Devtools,
+    RenderComponents,
   },
-  async asyncData(req: PageData) {
-    const archivedList = [] as any
-    const recentBlog = [] as any
-    const data = await Stack.getEntryByUrl({
-      contentTypeUid: 'page',
-      entryUrl: `${req.route.path}`,
-    })
-    const list: [List] = await Stack.getEntries({
-      contentTypeUid: 'blog_post',
-      referenceFieldPath: [`author`, `related_post`],
-      jsonRtePath: ['body'],
-    })
-    list.forEach((item) => {
-      if (item.is_archived) {
-        archivedList.push(item)
-      } else {
-        recentBlog.push(item)
-      }
-    })
+  async asyncData(req: Context) {
+    const data = await getPage(req.route.fullPath)
+    const { recentBlogs, archivedBlogs } = await getBlogList()
     return {
-      banner: data[0],
-      archivedList,
-      recentBlog,
+      banner: data,
+      archivedBlogs,
+      recentBlogs,
     }
   },
-  head(req: Req) {
-    return {
-      title: req.banner.title,
-      meta: [
-        {
-          title: req.banner.seo.meta_title,
-          name: req.banner.seo.meta_description,
-          description: req.banner.seo.meta_description,
-          keywords: req.banner.seo.keywords,
-        },
-      ],
+  head() {
+    const metaData = {
+      property: this.data ? this.data.seo.meta_title : '',
+      content: this.data ? this.data.seo.meta_description : '',
+      keywords: this.data ? this.data.seo.keywords : '',
     }
+    const pageHeader: { title: string; meta?: Seo[] } = {
+      title: this.data ? this.data.title : 'Nuxt Starter App',
+      meta: [metaData],
+    }
+    return pageHeader
+  },
+  created() {
+    this.$store.commit('setPage', this.banner)
+    this.$store.commit('setBlogPost', null)
+    const blogLists = this.archivedBlogs.concat(this.recentBlogs)
+    this.$store.commit('setBlogList', blogLists)
   },
   mounted() {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
         this.banner = response.data
+        this.recentBlogs = response.recentBlogs
+        this.archivedBlogs = response.archivedBlogs
+        this.$store.commit('setPage', response.banner)
+        this.$store.commit('setBlogPost', null)
+        const blogLists = response.archivedBlogs.concat(response.recentBlogs)
+        this.$store.commit('setBlogList', blogLists)
       }
     })
-    this.$store.commit('setPage', this.banner)
-    const concat = this.archivedList.concat(this.recentBlog)
-    this.$store.commit('setBlogpost', concat)
+    const element: HTMLCollection =
+      document.getElementsByClassName('cslp-tooltip')
+    if (element.length > 0) {
+      element[0].outerHTML = ''
+    }
   },
   methods: {
     async fetchData() {
       try {
-        const data: [Data] = await Stack.getEntryByUrl({
-          contentTypeUid: 'page',
-          entryUrl: `${this.$route.path}`,
-        })
-        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
-        if (element.length > 0) {
-          element[0].outerHTML = ''
-        }
+        const data = await getPage(`${this.$route.path}`)
+        const { recentBlogs, archivedBlogs } = await getBlogList()
         return {
-          data: data[0],
+          data,
+          recentBlogs,
+          archivedBlogs,
         }
       } catch (e) {
         return false

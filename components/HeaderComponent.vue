@@ -9,17 +9,17 @@
       </div>
     </template>
     <div class="max-width header-div">
-      <div class="wrapper-logo">
+      <div v-if="headerData.uid" class="wrapper-logo">
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="headerData.title"
+          :title="headerData.title|| ''"
           to="/"
         >
           <img
             class="logo"
             :src="headerData.logo.url"
-            :alt="headerData.title"
+            :alt="headerData.title || 'logo'"
           />
         </NuxtLink>
       </div>

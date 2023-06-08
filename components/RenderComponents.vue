@@ -1,7 +1,7 @@
 <template>
   <main
     v-if="components"
-    :data-pageref="entryUid"
+    :data-pageref="entryUid || ''"
     data-contenttype="page"
     :data-locale="locale"
   >
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from "vue"
+import { PropType } from 'vue'
 import BlogSection from '../components/BlogSection.vue'
 import BlogBanner from '../components/BlogBanner.vue'
 import AboutSectionBucket from '../components/AboutSectionBucket.vue'
@@ -72,7 +72,7 @@ import SectionWithEmbedObject from '../components/SectionWithEmbedObject.vue'
 import TeamSection from '../components/TeamSection.vue'
 import SectionWithCards from '../components/SectionWithCards.vue'
 import HeroBanner from '../components/HeroBanner.vue'
-import type {ComponentsProps} from "../typescript/pages"
+import type { ComponentsProps } from '../typescript/pages'
 import SectionComponents from './SectionComponent.vue'
 
 export default {
@@ -90,20 +90,20 @@ export default {
   props: {
     components: {
       required: true,
-      type: Array as PropType<ComponentsProps[]>
+      type: Array as PropType<ComponentsProps[]>,
     },
     page: {
       required: true,
-      type: String
+      type: String,
     },
     entryUid: {
       required: true,
-      type: String
+      type: String,
     },
     locale: {
       required: true,
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 }
 </script>

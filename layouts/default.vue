@@ -3,7 +3,9 @@
     <HeaderComponent v-if="header.title" :header="header" />
     <Nuxt />
     <FooterComponent v-if="footer.title" :footer="footer" />
+    <client-only>
     <DevTools />
+    </client-only>
   </div>
 </template>
 

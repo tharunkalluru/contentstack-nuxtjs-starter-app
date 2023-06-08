@@ -1,9 +1,9 @@
 <template>
   <RenderComponents
-    v-if="data"
+    v-if="data.uid"
     :components="data.page_components"
     :page="data.title"
-    :entryUid="data.uid"
+    :entryUid="data.uid || ''"
     :locale="data.locale"
   />
   <NotFound v-else-if="!data" />
@@ -32,20 +32,20 @@ export default {
   },
   head() {
     const metaData = {
-      property: this.data ? this.data.seo.meta_title : '',
-      content: this.data ? this.data.seo.meta_description : '',
-      keywords: this.data ? this.data.seo.keywords : '',
+      property: this.data?.seo ? this.data.seo.meta_title : '',
+      content: this.data?.sep ? this.data.seo.meta_description : '',
+      keywords: this.data?.seo ? this.data.seo.keywords : '',
     }
     const pageHeader: { title: string; meta?: Seo[] } = {
-      title: this.data ? this.data.title : 'Nuxt Starter App',
+      title: this.data?.title ? this.data?.title : 'Nuxt Starter App',
       meta: [metaData],
     }
     return pageHeader
   },
-  created(){
+  created() {
     this.$store.commit('setPage', this.data)
     this.$store.commit('setBlogPost', null)
-    this.$store.commit("setBlogList", null)
+    this.$store.commit('setBlogList', null)
   },
   mounted() {
     onEntryChange(async () => {

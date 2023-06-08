@@ -1,10 +1,10 @@
 <template>
   <main>
     <RenderComponents
-      v-if="banner"
+      v-if="banner.uid"
       :components="banner.page_components"
       :page="banner.title"
-      :entry-uid="banner.uid"
+      :entryUid="banner.uid || ''"
       :locale="banner.locale"
     />
     <ClientOnly>
@@ -69,12 +69,12 @@ export default {
   },
   head() {
     const metaData = {
-      property: this.data ? this.data.seo.meta_title : '',
-      content: this.data ? this.data.seo.meta_description : '',
-      keywords: this.data ? this.data.seo.keywords : '',
+      property: this.data?.seo ? this.data?.seo.meta_title : '',
+      content: this.data?.seo ? this.data?.seo.meta_description : '',
+      keywords: this.data?.seo ? this.data?.seo.keywords : '',
     }
     const pageHeader: { title: string; meta?: Seo[] } = {
-      title: this.data ? this.data.title : 'Nuxt Starter App',
+      title: this.data.title ? this.data.title : 'Nuxt Starter App',
       meta: [metaData],
     }
     return pageHeader

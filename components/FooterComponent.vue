@@ -5,35 +5,37 @@
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="$store.state.footer.title"
+          :title="footerData.title"
           to="/"
         >
           <img
             class="logo"
-            :src="$store.state.footer.logo.url"
-            :alt="$store.state.footer.title"
+            :src="footerData.logo.url"
+            :alt="footerData.title"
           />
         </NuxtLink>
       </div>
       <div class="col-half">
         <nav>
           <ul class="nav-ul">
-            <li
-              v-for="navItems in $store.state.footer.navigation.link"
-              :key="navItems.title"
-              class="footer-nav-li"
-            >
-              <NuxtLink :to="navItems.href">
-                {{ navItems.title }}
-              </NuxtLink>
-            </li>
+            <template v-for="navItems in footerData.navigation.link">
+              <li
+                v-if="navItems.title"
+                :key="navItems.title || 'key'"
+                class="footer-nav-li"
+              >
+                <NuxtLink :to="navItems.href || '/'">
+                  {{ navItems.title || '' }}
+                </NuxtLink>
+              </li>
+            </template>
           </ul>
         </nav>
       </div>
       <div class="col-quarter social-link">
         <div class="social-nav">
           <a
-            v-for="index in $store.state.footer.social.social_share"
+            v-for="index in footerData.social.social_share"
             :key="index.title"
             :href="index.link.href"
             :title="index.title"
@@ -43,54 +45,44 @@
         </div>
       </div>
     </div>
-    <div class="copyright" v-html="$store.state.footer.copyright" />
+    <div class="copyright" v-html="footerData.copyright" />
   </footer>
 </template>
 
 <script lang="ts">
-import Stack, { onEntryChange } from '../plugins/contentstack'
-import Links from '../typescript/data'
-
-interface PageResponse {
-  title: string
-  url: string
-}
+import { PropType } from 'vue'
+import { onEntryChange } from '../plugins/contentstack'
+import { FooterRes } from '~/typescript/response'
+import { filterFooterLinks, getAllEntries, getFooter } from '~/helper'
 
 export default {
-  async fetch() {
-    const response = await this.fetchData()
-    this.$store.commit('setFooter', response[0])
+  props: {
+    footer: {
+      required: true,
+      type: Object as PropType<FooterRes>,
+    },
+  },
+  data() {
+    this.$store.commit('setFooter', this.footer)
+    return {
+      footerData: this.footer,
+    }
   },
   mounted() {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
-        this.$store.commit('setFooter', response[0])
+        this.footerData = response
+        this.$store.commit('setFooter', response)
       }
     })
   },
   methods: {
     async fetchData() {
-      const result = await Stack.getEntries({
-        contentTypeUid: 'footer',
-        jsonRtePath: ['copyright'],
-      })
-      const responsePages: [PageResponse] = await Stack.getEntries({
-        contentTypeUid: 'page',
-      })
-      const navFooterList = result[0].navigation.link
-      if (responsePages.length !== result.length) {
-        responsePages.forEach((entry) => {
-          const fFound = result[0].navigation.link.find(
-            (link: Links) => link.title === entry.title
-          )
-          if (!fFound) {
-            navFooterList.push({ title: entry.title, href: entry.url })
-          }
-        })
-      }
-      result[0].navigation.link = navFooterList
-      return result
+      const footer = await getFooter()
+      const allEntries = await getAllEntries()
+      const filteredLinks = filterFooterLinks(allEntries, footer)
+      return filteredLinks
     },
   },
 }

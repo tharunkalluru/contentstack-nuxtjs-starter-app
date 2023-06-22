@@ -1,15 +1,10 @@
 export default {
-  target: 'static',
   env: {
     CONTENTSTACK_API_KEY: process.env.CONTENTSTACK_API_KEY,
     CONTENTSTACK_DELIVERY_TOKEN: process.env.CONTENTSTACK_DELIVERY_TOKEN,
     CONTENTSTACK_ENVIRONMENT: process.env.CONTENTSTACK_ENVIRONMENT,
-    CONTENTSTACK_BRANCH: process.env.CONTENTSTACK_BRANCH
-      ? process.env.CONTENTSTACK_BRANCH
-      : 'main',
-    CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION
-      ? process.env.CONTENTSTACK_REGION
-      : '',
+    CONTENTSTACK_BRANCH: process.env.CONTENTSTACK_BRANCH || 'main',
+    CONTENTSTACK_REGION: process.env.CONTENTSTACK_REGION || 'us',
     CONTENTSTACK_MANAGEMENT_TOKEN: process.env.CONTENTSTACK_MANAGEMENT_TOKEN,
     CONTENTSTACK_API_HOST: process.env.CONTENTSTACK_API_HOST,
     CONTENTSTACK_APP_HOST: process.env.CONTENTSTACK_APP_HOST,
@@ -64,12 +59,12 @@ export default {
   },
 
   css: [],
-
+  
   plugins: [],
 
   components: true,
 
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/eslint-module'],
+  buildModules: ['@nuxtjs/dotenv','@nuxt/typescript-build', '@nuxtjs/eslint-module'],
 
   modules: [
     '@nuxtjs/axios',

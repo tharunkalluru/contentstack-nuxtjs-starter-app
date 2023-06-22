@@ -1,22 +1,25 @@
 <template>
   <header class="header">
-    <template v-if="$store.state.header.notification_bar.show_announcement">
-      <div class="note-div">
-        <span v-html="$store.state.header.notification_bar.announcement_text" />
+    <template v-if="headerData.notification_bar">
+      <div
+        v-if="headerData.notification_bar.show_announcement"
+        class="note-div"
+      >
+        <span v-html="headerData.notification_bar.announcement_text" />
       </div>
     </template>
     <div class="max-width header-div">
-      <div class="wrapper-logo">
+      <div v-if="headerData.uid" class="wrapper-logo">
         <NuxtLink
           aria-current="page"
           class="logo-tag"
-          :title="$store.state.header.title"
+          :title="headerData.title|| ''"
           to="/"
         >
           <img
             class="logo"
-            :src="$store.state.header.logo.url"
-            :alt="$store.state.header.title"
+            :src="headerData.logo.url"
+            :alt="headerData.title || 'logo'"
           />
         </NuxtLink>
       </div>
@@ -25,16 +28,18 @@
         <span class="navicon" />
       </label>
       <nav class="menu">
-        <ul class="nav-ul header-ul">
-          <li
-            v-for="navItems in $store.state.header.navigation_menu"
-            :key="navItems.title"
-            class="nav-li"
-          >
-            <NuxtLink :to="navItems.page_reference[0].url">
-              {{ navItems.label }}
-            </NuxtLink>
-          </li>
+        <ul v-if="headerData.navigation_menu.length" class="nav-ul header-ul">
+          <template v-for="navItems in headerData.navigation_menu">
+            <li
+              v-if="navItems.label"
+              :key="navItems.label || 'key'"
+              class="nav-li"
+            >
+              <NuxtLink :to="navItems?.page_reference[0]?.url || '/'">
+                {{ navItems.label || '' }}
+              </NuxtLink>
+            </li>
+          </template>
         </ul>
       </nav>
       <div class="json-preview">
@@ -45,59 +50,45 @@
 </template>
 
 <script lang="ts">
-
-import Stack, { onEntryChange } from '../plugins/contentstack'
-import Links from '../typescript/data'
+import { PropType } from 'vue'
+import { onEntryChange } from '../plugins/contentstack'
 import Tooltip from './ToolTip.vue'
-
-interface PageResponse {
-  title: string;
-  url: string;
-}
+import { HeaderRes } from '~/typescript/response'
+import { filterHeaderNav, getAllEntries, getHeader } from '~/helper'
 
 export default {
   components: {
-    Tooltip
+    Tooltip,
   },
-  async fetch () {
-    const response = await this.fetchData()
-    this.$store.commit('setHeader', response[0])
+  props: {
+    header: {
+      required: true,
+      type: Object as PropType<HeaderRes>,
+    },
   },
-  mounted () {
-    onEntryChange(async () => {
+  data() {
+     this.$store.commit('setHeader', this.header)
+    return {
+      headerData: this.header,
+    }
+  },
+  mounted() {
+    onEntryChange(() => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
-        const response = await this.fetchData()
-        this.$store.commit('setHeader', response[0])
+        this.fetchData().then((res: HeaderRes[]) => {
+          this.headerData = res
+          this.$store.commit('setHeader', res)
+        })
       }
     })
   },
   methods: {
-    async fetchData () {
-      const result = await Stack.getEntries({
-        contentTypeUid: 'header',
-        referenceFieldPath: `navigation_menu.page_reference`,
-        jsonRtePath: ['notification_bar.announcement_text']
-      })
-      const responsePages: [PageResponse] = await Stack.getEntries({
-        contentTypeUid: 'page'
-      })
-      const navHeaderList = result[0].navigation_menu
-      if (responsePages.length !== result.length) {
-        responsePages.forEach((entry) => {
-          const hFound = result[0].navigation_menu.find(
-            (navLink: Links) => navLink.label === entry.title
-          )
-          if (!hFound) {
-            navHeaderList.push({
-              label: entry.title,
-              page_reference: [{ title: entry.title, url: entry.url }]
-            })
-          }
-        })
-      }
-      result[0].navigation_menu = navHeaderList
-      return result
-    }
-  }
+    fetchData: async (): Promise<HeaderRes> => {
+      const result = await getHeader()
+      const responsePages = await getAllEntries()
+      const newHeaderRes = filterHeaderNav(responsePages, result)
+      return newHeaderRes
+    },
+  },
 }
 </script>

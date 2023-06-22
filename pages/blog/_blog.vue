@@ -1,6 +1,12 @@
 <template>
   <main>
-    <BlogBanner :data="banner.page_components[0].hero_banner" />
+    <RenderComponents
+      v-if="banner.uid"
+      :components="banner.page_components"
+      :page="banner.title"
+      :entryUid="banner.uid || ''"
+      :locale="banner.locale"
+    />
     <ClientOnly>
       <Devtools />
     </ClientOnly>
@@ -15,7 +21,7 @@
         <span>
           {{ moment(data.date) }}, <strong>{{ data.author[0].title }}</strong>
         </span>
-        <p v-html="data.body" />
+        <div v-html="data.body" />
       </div>
       <div v-if="data" class="blog-column-right">
         <div class="related-post">
@@ -37,76 +43,70 @@
 <script lang="ts">
 import moment from 'moment'
 
-import BlogBanner from '../../components/BlogBanner.vue'
+import { Context } from '@nuxt/types'
+import RenderComponents from '../../components/RenderComponents.vue'
 import Devtools from '../../components/DevTools.vue'
-import Stack, { onEntryChange } from '../../plugins/contentstack'
-import Data from '@/typescript/pages'
-import Req from '@/typescript/pages'
-import PageData from '@/typescript/pages'
-
+import { onEntryChange } from '../../plugins/contentstack'
+import { Seo } from '~/typescript/components'
+import { getBlogPost, getPage } from '~/helper'
 export default {
   components: {
-    BlogBanner,
+    RenderComponents,
     Devtools,
   },
-  async asyncData(req: PageData) {
+  async asyncData(req: Context) {
     try {
-      const banner = await Stack.getEntryByUrl({
-        contentTypeUid: 'page',
-        entryUrl: `/blog`,
-      })
-      const data = await Stack.getEntryByUrl({
-        contentTypeUid: 'blog_post',
-        entryUrl: `${req.route.fullPath}`,
-        referenceFieldPath: [`related_post`, `author`],
-        jsonRtePath: ['body', 'related_post.body'],
-      })
+      const banner = await getPage('/blog')
+      const data = await getBlogPost(req.route.fullPath)
       return {
-        data: data[0],
-        banner: banner[0],
+        data,
+        banner,
+        url: req.route.fullPath,
       }
     } catch (e) {
       return false
     }
   },
-  head(req: Req) {
-    return {
-      title: req.data.title,
-      meta: [
-        {
-          title: req.data.seo.meta_title,
-          name: req.data.seo.meta_title,
-          description: req.data.seo.meta_description,
-          keywords: req.data.seo.keywords,
-        },
-      ],
+  head() {
+    const metaData = {
+      property: this.data?.seo ? this.data?.seo.meta_title : '',
+      content: this.data?.seo ? this.data?.seo.meta_description : '',
+      keywords: this.data?.seo ? this.data?.seo.keywords : '',
     }
+    const pageHeader: { title: string; meta?: Seo[] } = {
+      title: this.data.title ? this.data.title : 'Nuxt Starter App',
+      meta: [metaData],
+    }
+    return pageHeader
+  },
+  created() {
+    this.$store.commit('setPage', this.banner)
+    this.$store.commit('setBlogPost', this.data)
+    this.$store.commit('setBlogList', null)
   },
   mounted() {
     onEntryChange(async () => {
       if (process.env.CONTENTSTACK_LIVE_PREVIEW === 'true') {
         const response = await this.fetchData()
         this.data = response.data
+        this.$store.commit('setPage', this.banner)
+        this.$store.commit('setBlogPost', response.data)
+        this.$store.commit('setBlogList', null)
       }
     })
-    this.$store.commit('setPage', this.banner)
-    this.$store.commit('setBlogpost', this.data)
+
+    const element: HTMLCollection =
+      document.getElementsByClassName('cslp-tooltip')
+    if (element.length > 0) {
+      element[0].outerHTML = ''
+    }
   },
   methods: {
     async fetchData() {
       try {
-        const data: [Data] = await Stack.getEntryByUrl({
-          contentTypeUid: 'blog_post',
-          entryUrl: `${this.$route.fullPath}`,
-          referenceFieldPath: [`related_post`, `author`],
-          jsonRtePath: ['body', 'related_post.body'],
-        })
-        const element: HTMLCollection = document.getElementsByClassName('cslp-tooltip')
-        if (element.length > 0) {
-          element[0].outerHTML = ''
-        }
+        const data = await getBlogPost(`${this.$route.path}`)
         return {
-          data: data[0],
+          data,
         }
       } catch (e) {
         return false

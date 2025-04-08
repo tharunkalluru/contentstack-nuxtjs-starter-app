@@ -95,3 +95,5 @@ export default {
   content: {},
   build: { html: { minify: { collapseWhitespace: true } } },
 }
+
+//kkjkjk

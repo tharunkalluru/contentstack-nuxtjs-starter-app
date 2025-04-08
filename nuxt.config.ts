@@ -64,7 +64,7 @@ export default {
 
   components: true,
 
-  buildModules: ['@nuxtjs/dotenv','@nuxt/typescript-build', '@nuxtjs/eslint-module'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/eslint-module'],
 
   modules: [
     '@nuxtjs/axios',
